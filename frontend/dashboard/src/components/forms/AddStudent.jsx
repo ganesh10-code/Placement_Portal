@@ -44,7 +44,7 @@ const AddStudent = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Pass token in Authorization header
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(studentData),
       });

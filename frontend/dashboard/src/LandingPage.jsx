@@ -6,9 +6,11 @@ import Sidebar from "./components/Sidebar";
 import ForgotPassword from "./components/forms/ForgotPassword";
 import Welcome from "./components/Welcome";
 import AddAdmin from "./components/forms/AddAdmin";
+import AddStudent from "./components/forms/AddStudent";
+import AddJob from "./components/forms/AddJob";
 import "./index.css";
 import "./app.css";
-import AddStudent from "./components/forms/AddStudent";
+import AddCompany from "./components/forms/AddCompany";
 
 const LandingPage = () => {
   const [activeLogin, setActiveLogin] = useState("");
@@ -121,16 +123,16 @@ const LandingPage = () => {
                 showSidebarHandler={showSidebarHandler}
               />
             ))}
-
           {showForgotPassword && (
             <ForgotPassword
               onClose={closeForgotPassword}
               onOtpVerified={handleOtpVerified}
             />
           )}
-
           {currentPage === "addAdmin" && <AddAdmin />}
           {currentPage === "addStudent" && <AddStudent />}
+          {currentPage === "addJob" && <AddJob />}
+          {currentPage === "addCompany" && <AddCompany />}
         </div>
       </div>
     </div>

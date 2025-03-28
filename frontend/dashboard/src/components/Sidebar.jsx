@@ -40,7 +40,7 @@ const Sidebar = ({ activeLogin, handleNavigation }) => {
         ]
       : [
           {
-            name: "Upload Resume",
+            name: "Resume",
             icon: <FaFileUpload />,
             action: () => handleNavigation("uploadResume"),
           },
