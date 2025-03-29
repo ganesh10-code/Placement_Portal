@@ -39,7 +39,7 @@ const AddCompany = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        setMessage({ type: "success", text: "Company added successfully!" });
+        setMessage({ type: "success", text: "✅Company added successfully!" });
         setFormData({
           name: "",
           website: "",

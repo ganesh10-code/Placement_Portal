@@ -52,7 +52,7 @@ const AddStudent = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: "success", text: "Student added successfully!" });
+        setMessage({ type: "success", text: "✅Student added successfully!" });
         setName("");
         setEmail("");
         setPassword("");

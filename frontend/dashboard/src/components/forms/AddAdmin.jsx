@@ -30,7 +30,7 @@ const AddAdmin = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: "success", text: "Admin added successfully!" });
+        setMessage({ type: "success", text: "✅Admin added successfully!" });
         setName("");
         setEmail("");
         setPassword("");

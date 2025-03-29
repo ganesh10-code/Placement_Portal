@@ -129,10 +129,10 @@ const LandingPage = () => {
               onOtpVerified={handleOtpVerified}
             />
           )}
-          {currentPage === "addAdmin" && <AddAdmin />}
-          {currentPage === "addStudent" && <AddStudent />}
-          {currentPage === "addJob" && <AddJob />}
-          {currentPage === "addCompany" && <AddCompany />}
+          {currentPage === "addAdmin" && isLoggedIn && <AddAdmin />}
+          {currentPage === "addStudent" && isLoggedIn && <AddStudent />}
+          {currentPage === "addJob" && isLoggedIn && <AddJob />}
+          {currentPage === "addCompany" && isLoggedIn && <AddCompany />}
         </div>
       </div>
     </div>

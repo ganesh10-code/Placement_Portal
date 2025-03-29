@@ -63,7 +63,7 @@ const AddJob = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage({ type: "success", text: "Job added successfully!" });
+        setMessage({ type: "success", text: "✅Job added successfully!" });
         setFormData({
           companyId: "",
           role: "",
