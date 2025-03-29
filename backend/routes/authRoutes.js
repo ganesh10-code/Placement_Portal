@@ -30,7 +30,6 @@ router.post("/reset_password", otpLimiter, authController.resetPassword);
 router.post("/send_otp", otpLimiter, authController.sendOTP);
 router.post("/verify_otp", otpLimiter, authController.verifyOTP);
 router.post("/refresh_token", authController.refreshAccessToken);
-router.post("/logout", authController.logout);
 router.post(
   "/upload_resume",
   verifyToken,

@@ -49,7 +49,7 @@ const createInitialAdmin = async () => {
 
       console.log("Initial Admin Created Successfully!");
     } else {
-      console.log("Admin already exists.");
+      console.log("Main Admin already exists.");
     }
   } catch (error) {
     console.error("Error creating initial admin:", error);
@@ -68,15 +68,16 @@ const adminLogin = async (req, res) => {
     // Send refresh token as HTTP-only cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure in production
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
+    console.log("Set-Cookie header:", res.getHeaders()["set-cookie"]); // 🔍 Debugging
+    console.log(email, " - Admin login successful");
     return res.status(200).json({
       token: accessToken,
       Success: "Login Successfull",
     });
-    console.log(email, " - Admin login successful");
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -96,15 +97,16 @@ const studentLogin = async (req, res) => {
     // Send refresh token as HTTP-only cookie
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Secure in production
-      sameSite: "strict",
+      secure: false,
+      sameSite: "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
+    console.log("Set-Cookie header:", res.getHeaders()["set-cookie"]); // 🔍 Debugging
+    console.log(rollno, " - student login successful");
     return res.status(200).json({
       token: accessToken,
       Success: "Login Successfull",
     });
-    console.log(email, " - student login successful");
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -181,22 +183,38 @@ const verifyOTP = async (req, res) => {
   res.json({ message: "Password reset successful", token: userId });
 };
 
-const refreshAccessToken = (req, res) => {
+const refreshAccessToken = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (!refreshToken)
-    return res.status(403).json({ message: "Refresh token required" });
+    return res.status(401).json({ message: "Unauthorized: No refresh token" });
 
-  jwt.verify(refreshToken, refreshKey, (err, user) => {
-    if (err) return res.status(403).json({ message: "Invalid refresh token" });
+  try {
+    const decoded = jwt.verify(refreshToken, refreshKey);
+    let user;
+    let userType;
 
-    const newAccessToken = generateAccessToken(user);
-    res.json({ accessToken: newAccessToken });
-  });
-};
+    // Check if the user is an admin or student
+    user = await Admin.findById(decoded.id);
+    if (user) {
+      userType = "admin";
+    } else {
+      user = await Student.findById(decoded.id);
+      if (user) {
+        userType = "student";
+      }
+    }
 
-const logout = (req, res) => {
-  res.clearCookie("refreshToken");
-  res.json({ message: "Logged out successfully" });
+    if (!user) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    const newAccessToken = generateAccessToken(user._id, userType);
+    return res.status(200).json({ token: newAccessToken });
+  } catch (error) {
+    return res
+      .status(403)
+      .json({ message: "Invalid or expired refresh token" });
+  }
 };
 
 module.exports = {
@@ -207,5 +225,4 @@ module.exports = {
   sendOTP,
   verifyOTP,
   refreshAccessToken,
-  logout,
 };

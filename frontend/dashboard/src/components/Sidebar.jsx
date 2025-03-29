@@ -18,36 +18,41 @@ const Sidebar = ({ activeLogin, handleNavigation }) => {
     activeLogin === "admin"
       ? [
           {
-            name: "Add Admin",
+            name: "Admins",
             icon: <FaUserPlus />,
-            action: () => handleNavigation("addAdmin"),
+            action: () => handleNavigation("Admins"),
           },
           {
-            name: "Add Student",
-            icon: <FaUser />,
-            action: () => handleNavigation("addStudent"),
+            name: "Students",
+            icon: <FaUserPlus />,
+            action: () => handleNavigation("Students"),
           },
           {
-            name: "Add Job",
+            name: "Jobs",
             icon: <FaBriefcase />,
-            action: () => handleNavigation("addJob"),
+            action: () => handleNavigation("Jobs"),
           },
           {
-            name: "Add Company",
+            name: "Companies",
             icon: <FaBuilding />,
-            action: () => handleNavigation("addCompany"),
+            action: () => handleNavigation("Companies"),
           },
         ]
       : [
           {
-            name: "Resume",
-            icon: <FaFileUpload />,
-            action: () => handleNavigation("uploadResume"),
+            name: "Profile",
+            icon: <FaUser />,
+            action: () => handleNavigation("profile"),
           },
           {
-            name: "Apply Job",
+            name: "Resume",
+            icon: <FaFileUpload />,
+            action: () => handleNavigation("resume"),
+          },
+          {
+            name: "Find Jobs",
             icon: <FaBriefcase />,
-            action: () => handleNavigation("applyJob"),
+            action: () => handleNavigation("findJobs"),
           },
         ];
 
@@ -61,7 +66,7 @@ const Sidebar = ({ activeLogin, handleNavigation }) => {
         {menuItems.map((item, index) => (
           <li
             key={index}
-            className="flex items-center space-x-3 p-3 hover:bg-[#3E9200] rounded-lg cursor-pointer transition-all"
+            className="flex items-center space-x-3 p-3 hover:bg-[#3E92CC] rounded-lg cursor-pointer transition-all"
             onClick={item.action}
           >
             <span>{item.icon}</span>

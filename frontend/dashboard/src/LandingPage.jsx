@@ -11,6 +11,8 @@ import AddJob from "./components/forms/AddJob";
 import "./index.css";
 import "./app.css";
 import AddCompany from "./components/forms/AddCompany";
+import Alert from "./components/Alert";
+import Confirm from "./components/Confirm";
 
 const LandingPage = () => {
   const [activeLogin, setActiveLogin] = useState("");
@@ -20,7 +22,9 @@ const LandingPage = () => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentPage, setCurrentPage] = useState("dashboard"); // Track active page
+  const [currentPage, setCurrentPage] = useState("dashboard");
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [alert, setAlert] = useState({ show: false, type: "", message: "" });
 
   useEffect(() => {
     const token = localStorage.getItem("loginToken");
@@ -34,17 +38,31 @@ const LandingPage = () => {
   }, [activeLogin]);
 
   const logoutHandler = () => {
-    const userConfirm = confirm("Are You Sure! Do You Want to Logout⚠");
-    if (!userConfirm) return;
+    setShowConfirm(true);
+  };
+  const confirmLogout = () => {
     localStorage.removeItem("loginToken");
     localStorage.removeItem("activeLogin");
+    localStorage.removeItem("email");
     setIsLoggedIn(false);
     setActiveLogin(null);
     setShowLogin(false);
     setShowSidebar(false);
     setShowForgotPassword(false);
     setShowWelcome(true);
-    alert("Logged out successfully");
+    setShowConfirm(false);
+
+    // Show styled alert
+    setAlert({
+      show: true,
+      type: "success",
+      message: "Logged out successfully!",
+    });
+
+    // Hide alert after 3 seconds
+    setTimeout(() => {
+      setAlert({ show: false, type: "", message: "" });
+    }, 3000);
   };
 
   const showLoginHandler = () => {
@@ -85,7 +103,7 @@ const LandingPage = () => {
     setShowForgotPassword(false);
     localStorage.setItem("activeLogin", role);
   };
-  // Handle Sidebar Navigation
+
   const handleNavigation = (page) => {
     setCurrentPage(page);
   };
@@ -98,10 +116,27 @@ const LandingPage = () => {
         isLoggedIn={isLoggedIn}
         logoutHandler={logoutHandler}
       />
-
+      {/* Styled Alert */}
+      {alert.show && (
+        <Alert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert({ show: false })}
+        />
+      )}
       {showWelcome && <Welcome />}
 
       <div className="flex h-[calc(100vh-80px)]">
+        {/* Confirm Logout Modal */}
+        <Confirm
+          isOpen={showConfirm}
+          onClose={() => setShowConfirm(false)}
+          onConfirm={confirmLogout}
+          title="Logout Confirmation"
+          message="Are you sure you want to logout?"
+          confirmText="Logout"
+        />
+
         {isLoggedIn && (
           <Sidebar
             activeLogin={activeLogin}
@@ -129,10 +164,20 @@ const LandingPage = () => {
               onOtpVerified={handleOtpVerified}
             />
           )}
-          {currentPage === "addAdmin" && isLoggedIn && <AddAdmin />}
-          {currentPage === "addStudent" && isLoggedIn && <AddStudent />}
-          {currentPage === "addJob" && isLoggedIn && <AddJob />}
-          {currentPage === "addCompany" && isLoggedIn && <AddCompany />}
+          {currentPage === "Admins" &&
+            isLoggedIn &&
+            activeLogin === "admin" && (
+              <AddAdmin logoutHandler={logoutHandler} />
+            )}
+          {currentPage === "Students" &&
+            isLoggedIn &&
+            activeLogin === "admin" && <AddStudent />}
+          {currentPage === "Jobs" && isLoggedIn && activeLogin === "admin" && (
+            <AddJob />
+          )}
+          {currentPage === "Companies" &&
+            isLoggedIn &&
+            activeLogin === "admin" && <AddCompany />}
         </div>
       </div>
     </div>

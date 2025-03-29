@@ -1,9 +1,11 @@
 import { React, useState } from "react";
 import { API_URL } from "../../../utilities/API_path";
+import Alert from "../Alert";
 
 const StudentLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
   const [rollno, setRollNo] = useState("");
   const [password, setPassword] = useState("");
+  const [alert, setAlert] = useState(null);
 
   const studentLoginHandler = async (e) => {
     e.preventDefault();
@@ -14,24 +16,33 @@ const StudentLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ rollno, password }),
+        credentials: "include",
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Login Successfully");
+        setAlert({ type: "success", message: "Student Login Successful!" });
         console.log(data);
         localStorage.setItem("loginToken", data.token);
         setRollNo("");
         setPassword("");
-        showSidebarHandler("student");
+        setTimeout(() => showSidebarHandler("student"), 500);
       } else {
-        alert("Invalid Credentials");
+        setAlert({ type: "error", message: data.message });
       }
     } catch (error) {
+      setAlert({ type: "error", message: "Something went wrong!" });
       console.error(error);
     }
   };
   return (
     <div className="p-6 bg-white rounded-lg shadow-lg w-96 transition-all animate-fadeIn">
+      {alert && (
+        <Alert
+          type={alert.type}
+          message={alert.message}
+          onClose={() => setAlert(null)}
+        />
+      )}
       <h2 className="text-2xl font-bold text-[#1E1E1E] text-center mb-4">
         Student Login
       </h2>

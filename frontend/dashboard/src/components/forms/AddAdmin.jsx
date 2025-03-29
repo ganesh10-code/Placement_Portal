@@ -1,7 +1,7 @@
 import { React, useState } from "react";
-import { API_URL } from "../../../utilities/API_path";
+import { fetchWithAuth } from "../../../utilities/api";
 
-const AddAdmin = () => {
+const AddAdmin = ({ logoutHandler }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -10,24 +10,15 @@ const AddAdmin = () => {
   const handleAddAdmin = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem("loginToken"); // Get token from localStorage
-
-    if (!token) {
-      setMessage({ type: "error", text: "Unauthorized: No login token found" });
-      return;
-    }
-
     try {
-      const response = await fetch(`${API_URL}/auth/add_admin`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Pass token in Authorization header
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      const data = await response.json();
+      const { response, data } = await fetchWithAuth(
+        "/auth/add_admin",
+        logoutHandler,
+        {
+          method: "POST",
+          body: JSON.stringify({ name, email, password }),
+        }
+      );
 
       if (response.ok) {
         setMessage({ type: "success", text: "✅Admin added successfully!" });

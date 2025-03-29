@@ -1,5 +1,6 @@
 import { React, useState } from "react";
 import { API_URL } from "../../../utilities/API_path";
+import Alert from "../Alert";
 
 const ForgotPassword = ({ onClose, onOtpVerified }) => {
   const [email, setEmail] = useState("");
@@ -7,6 +8,7 @@ const ForgotPassword = ({ onClose, onOtpVerified }) => {
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const sendOtp = async (e) => {
     e.preventDefault();
@@ -20,14 +22,15 @@ const ForgotPassword = ({ onClose, onOtpVerified }) => {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("OTP Sent Successfully");
+        setAlert({ type: "success", message: "OTP Sent Successfully!" });
         console.log(data.message);
         setOtpSent(true);
         localStorage.setItem("email", email);
       } else {
-        alert(data.message);
+        setAlert({ type: "error", message: data.message });
       }
     } catch (error) {
+      setAlert({ type: "error", message: "Something went wrong!" });
       console.error(error);
     }
   };
@@ -47,15 +50,19 @@ const ForgotPassword = ({ onClose, onOtpVerified }) => {
       });
       const data = await response.json();
       if (response.ok) {
-        alert("Password Change! Please login again");
+        setAlert({
+          type: "success",
+          message: "Password Change! Please login again",
+        });
         console.log(data.message);
         localStorage.removeItem("email");
         onOtpVerified();
         onClose(); // Close the modal
       } else {
-        alert(data.message);
+        setAlert({ type: "error", message: data.message });
       }
     } catch (error) {
+      setAlert({ type: "error", message: "Something went wrong!" });
       console.error(error);
     } finally {
       setLoading(false);
@@ -65,6 +72,13 @@ const ForgotPassword = ({ onClose, onOtpVerified }) => {
   return (
     <div className="flex items-center justify-center ">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+        {alert && (
+          <Alert
+            type={alert.type}
+            message={alert.message}
+            onClose={() => setAlert(null)}
+          />
+        )}
         <h2 className="text-xl font-bold text-[#041931] mb-4">
           Forgot Password
         </h2>
