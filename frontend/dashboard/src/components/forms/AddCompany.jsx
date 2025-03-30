@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { API_URL } from "../../../utilities/API_path";
+import { fetchWithAuth } from "../../../utilities/api";
 
-const AddCompany = () => {
+const AddCompany = ({ logoutHandler }) => {
   const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -22,22 +22,16 @@ const AddCompany = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("loginToken"); // Get token from localStorage
 
-    if (!token) {
-      setMessage({ type: "error", text: "Unauthorized: No login token found" });
-      return;
-    }
     try {
-      const response = await fetch(`${API_URL}/auth/add_company`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
+      const { response, data } = await fetchWithAuth(
+        "/auth/add_company",
+        logoutHandler,
+        {
+          method: "POST",
+          body: JSON.stringify(formData),
+        }
+      );
       if (response.ok) {
         setMessage({ type: "success", text: "✅Company added successfully!" });
         setFormData({

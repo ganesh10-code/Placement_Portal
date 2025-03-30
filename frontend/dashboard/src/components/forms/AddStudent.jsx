@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { API_URL } from "../../../utilities/API_path";
+import { fetchWithAuth } from "../../../utilities/api";
 
-const AddStudent = () => {
+const AddStudent = ({ logoutHandler }) => {
   const [name, setName] = useState("");
   const [rollno, setRollno] = useState("");
   const [email, setEmail] = useState("");
@@ -32,24 +32,15 @@ const AddStudent = () => {
       phoneNumber,
     };
 
-    const token = localStorage.getItem("loginToken"); // Get token from localStorage
-
-    if (!token) {
-      setMessage({ type: "error", text: "Unauthorized: No login token found" });
-      return;
-    }
-
     try {
-      const response = await fetch(`${API_URL}/auth/add_student`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(studentData),
-      });
-
-      const data = await response.json();
+      const { response, data } = await fetchWithAuth(
+        "/auth/add_student",
+        logoutHandler,
+        {
+          method: "POST",
+          body: JSON.stringify(studentData),
+        }
+      );
 
       if (response.ok) {
         setMessage({ type: "success", text: "✅Student added successfully!" });

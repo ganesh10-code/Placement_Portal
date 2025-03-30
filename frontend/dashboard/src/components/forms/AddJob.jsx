@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { API_URL } from "../../../utilities/API_path";
+import { fetchWithAuth } from "../../../utilities/api";
 
-const AddJob = () => {
+const AddJob = ({ logoutHandler }) => {
   const [message, setMessage] = useState("");
   const [formData, setFormData] = useState({
     companyId: "",
@@ -45,23 +45,17 @@ const AddJob = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("loginToken"); // Get token from localStorage
 
-    if (!token) {
-      setMessage({ type: "error", text: "Unauthorized: No login token found" });
-      return;
-    }
     try {
-      const response = await fetch(`${API_URL}/auth/add_job`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(formData),
-      });
+      const { response, data } = await fetchWithAuth(
+        "/auth/add_job",
+        logoutHandler,
+        {
+          method: "POST",
+          body: JSON.stringify(formData),
+        }
+      );
 
-      const data = await response.json();
       if (response.ok) {
         setMessage({ type: "success", text: "✅Job added successfully!" });
         setFormData({
