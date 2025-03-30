@@ -171,13 +171,17 @@ const LandingPage = () => {
             )}
           {currentPage === "Students" &&
             isLoggedIn &&
-            activeLogin === "admin" && <AddStudent />}
+            activeLogin === "admin" && (
+              <AddStudent logoutHandler={logoutHandler} />
+            )}
           {currentPage === "Jobs" && isLoggedIn && activeLogin === "admin" && (
-            <AddJob />
+            <AddJob logoutHandler={logoutHandler} />
           )}
           {currentPage === "Companies" &&
             isLoggedIn &&
-            activeLogin === "admin" && <AddCompany />}
+            activeLogin === "admin" && (
+              <AddCompany logoutHandler={logoutHandler} />
+            )}
         </div>
       </div>
     </div>
