@@ -23,11 +23,12 @@ const StudentLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
         setAlert({ type: "success", message: "Student Login Successful!" });
         console.log(data);
         localStorage.setItem("loginToken", data.token);
+        localStorage.setItem("User", rollno);
         setRollNo("");
         setPassword("");
         setTimeout(() => showSidebarHandler("student"), 500);
       } else {
-        setAlert({ type: "error", message: data.message });
+        setAlert({ type: "error", message: data.error });
       }
     } catch (error) {
       setAlert({ type: "error", message: "Something went wrong!" });

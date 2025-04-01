@@ -23,11 +23,12 @@ const AdminLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
         setAlert({ type: "success", message: "Admin Login Successful!" });
         console.log(data);
         localStorage.setItem("loginToken", data.token);
+        localStorage.setItem("User", email);
         setEmail("");
         setPassword("");
         setTimeout(() => showSidebarHandler("admin"), 500);
       } else {
-        setAlert({ type: "error", message: data.message });
+        setAlert({ type: "error", message: data.error });
       }
     } catch (error) {
       setAlert({ type: "error", message: "Something went wrong!" });

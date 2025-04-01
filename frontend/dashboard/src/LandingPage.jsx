@@ -13,29 +13,35 @@ import "./app.css";
 import AddCompany from "./components/forms/AddCompany";
 import Alert from "./components/Alert";
 import Confirm from "./components/Confirm";
+import UserWelcome from "./components/UserWelcome";
 
 const LandingPage = () => {
   const [activeLogin, setActiveLogin] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showUserWelcome, setShowUserWelcome] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [showConfirm, setShowConfirm] = useState(false);
   const [alert, setAlert] = useState({ show: false, type: "", message: "" });
+  const [User, setUser] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("loginToken");
     const storedRole = localStorage.getItem("activeLogin");
+    const user = localStorage.getItem("User");
     if (token && storedRole) {
       setIsLoggedIn(true);
       setActiveLogin(storedRole);
       setShowWelcome(false);
       setShowSidebar(true);
+      setShowUserWelcome(true);
     }
-  }, [activeLogin]);
+    setUser(user);
+  }, [activeLogin, isLoggedIn]);
 
   const logoutHandler = () => {
     setShowConfirm(true);
@@ -51,6 +57,7 @@ const LandingPage = () => {
     setShowForgotPassword(false);
     setShowWelcome(true);
     setShowConfirm(false);
+    setShowUserWelcome(false);
 
     // Show styled alert
     setAlert({
@@ -109,7 +116,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4]">
+    <div className="min-h-screen bg-[#F4F4F4] flex flex-col">
       <Navbar
         setActiveLogin={setActiveLogin}
         showLoginHandler={showLoginHandler}
@@ -126,25 +133,31 @@ const LandingPage = () => {
       )}
       {showWelcome && <Welcome />}
 
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* Confirm Logout Modal */}
-        <Confirm
-          isOpen={showConfirm}
-          onClose={() => setShowConfirm(false)}
-          onConfirm={confirmLogout}
-          title="Logout Confirmation"
-          message="Are you sure you want to logout?"
-          confirmText="Logout"
-        />
-
+      <div className="flex flex-grow h-[calc(100vh-80px)] overflow-hidden">
+        <div className="z-50">
+          {/* Confirm Logout Modal */}
+          <Confirm
+            isOpen={showConfirm}
+            onClose={() => setShowConfirm(false)}
+            onConfirm={confirmLogout}
+            title="Logout Confirmation "
+            message="Are you sure you want to logout? "
+            confirmText="Logout"
+          />
+        </div>
         {isLoggedIn && (
           <Sidebar
             activeLogin={activeLogin}
             handleNavigation={handleNavigation}
+            setShowUserWelcome={setShowUserWelcome}
           />
         )}
 
-        <div className="flex-1 flex justify-center items-center p-6">
+        <div
+          className={`flex-1 p-3 overflow-auto pt-[80px] ${
+            isLoggedIn ? "ml-[250px]" : "flex justify-center items-center"
+          }`}
+        >
           {!isLoggedIn &&
             showLogin &&
             (activeLogin === "admin" ? (
@@ -164,24 +177,36 @@ const LandingPage = () => {
               onOtpVerified={handleOtpVerified}
             />
           )}
-          {currentPage === "Admins" &&
-            isLoggedIn &&
-            activeLogin === "admin" && (
-              <AddAdmin logoutHandler={logoutHandler} />
-            )}
-          {currentPage === "Students" &&
-            isLoggedIn &&
-            activeLogin === "admin" && (
-              <AddStudent logoutHandler={logoutHandler} />
-            )}
-          {currentPage === "Jobs" && isLoggedIn && activeLogin === "admin" && (
-            <AddJob logoutHandler={logoutHandler} />
+          {isLoggedIn && (
+            <div className="relative bg-white shadow-md rounded-lg p-3 pt-0 h-full  overflow-auto">
+              {showUserWelcome ? (
+                <UserWelcome role={activeLogin} name={User} />
+              ) : (
+                <>
+                  {currentPage === "Admins" &&
+                    isLoggedIn &&
+                    activeLogin === "admin" && (
+                      <AddAdmin logoutHandler={logoutHandler} />
+                    )}
+                  {currentPage === "Students" &&
+                    isLoggedIn &&
+                    activeLogin === "admin" && (
+                      <AddStudent logoutHandler={logoutHandler} />
+                    )}
+                  {currentPage === "Jobs" &&
+                    isLoggedIn &&
+                    activeLogin === "admin" && (
+                      <AddJob logoutHandler={logoutHandler} />
+                    )}
+                  {currentPage === "Companies" &&
+                    isLoggedIn &&
+                    activeLogin === "admin" && (
+                      <AddCompany logoutHandler={logoutHandler} />
+                    )}
+                </>
+              )}
+            </div>
           )}
-          {currentPage === "Companies" &&
-            isLoggedIn &&
-            activeLogin === "admin" && (
-              <AddCompany logoutHandler={logoutHandler} />
-            )}
         </div>
       </div>
     </div>

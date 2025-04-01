@@ -7,7 +7,7 @@ const Navbar = ({
   logoutHandler,
 }) => {
   return (
-    <nav className="flex justify-between items-center px-6 py-4 bg-[#041931] text-white shadow-md">
+    <nav className="fixed w-full flex justify-between items-center px-6 py-4 bg-[#041931] text-white shadow-md">
       <h1 className="text-xl font-bold">Placement Portal</h1>
       <div className="flex">
         {isLoggedIn ? (

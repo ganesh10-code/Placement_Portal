@@ -31,6 +31,18 @@ const addAdmin = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+//get all admins
+const getAllAdmins = async (req, res) => {
+  if (req.user.role != "admin") {
+    return res.status(404).json({ message: "Access Denied" });
+  }
+  try {
+    const admins = await Admin.find({}, "name email"); // Fetch only name and email
+    res.status(200).json({ admins });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch admins" });
+  }
+};
 
 //add student
 const addStudent = async (req, res) => {
@@ -58,6 +70,19 @@ const addStudent = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//get all students
+const getAllStudents = async (req, res) => {
+  if (req.user.role != "admin") {
+    return res.status(404).json({ message: "Access Denied" });
+  }
+  try {
+    const students = await Student.find({}, "name rollno education"); // Fetch only name and email
+    res.status(200).json({ students });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch admins" });
   }
 };
 
@@ -100,13 +125,22 @@ const addJob = async (req, res) => {
     company.jobs.push(newJob._id);
     await company.save();
 
-    // **Trigger Email Notifications Based on Criteria**
+    // **Trigger Email Notifications Based on Eligibility Criteria**
     const students = await Student.find(); // Fetch all students
     students.forEach(async (student) => {
       let shouldSendEmail = false;
+      const studentCGPA = student.education.cgpa;
+      const studentBranch = student.education.branch;
+      const allowedBranches = eligibilityCriteria.allowedBranches || [];
+
+      // Check if the student meets the eligibility criteria
+      const isEligible =
+        studentCGPA >= eligibilityCriteria.minCGPA &&
+        allowedBranches.includes(studentBranch);
+
       if (company.isPopular) {
-        shouldSendEmail = true;
-      } else {
+        shouldSendEmail = true; // Popular company, send to all eligible students
+      } else if (isEligible) {
         const offers = student.jobOffers || [];
         if (offers.length < 2) {
           const highestOffer = Math.max(
@@ -118,6 +152,7 @@ const addJob = async (req, res) => {
           }
         }
       }
+
       if (shouldSendEmail) {
         await sendEmail(
           student.email,
@@ -134,23 +169,11 @@ const addJob = async (req, res) => {
 };
 
 // Get all jobs (Populate company details)
-const getJobs = async (req, res) => {
+const getAllJobs = async (req, res) => {
   try {
-    let { page, limit } = req.query;
-    page = parseInt(page) || 1;
-    limit = parseInt(limit) || 10;
-
-    const jobs = await Job.find()
-      .populate("company", "name isPopular")
-      .skip((page - 1) * limit)
-      .limit(limit);
-
-    const totalJobs = await Job.countDocuments();
-
+    const jobs = await Job.find().populate("companyId", "name");
     res.status(200).json({
       jobs,
-      totalPages: Math.ceil(totalJobs / limit),
-      currentPage: page,
     });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
@@ -162,7 +185,7 @@ const getJobByCompany = async (req, res) => {
   const companyId = req.params.companyId;
   try {
     const jobs = await Job.find({ companyId: companyId });
-    res.status(200).json(jobs);
+    res.status(200).json({ jobs });
   } catch (error) {
     res
       .status(500)
@@ -204,7 +227,7 @@ const addCompany = async (req, res) => {
 const getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.find();
-    res.status(200).json(companies);
+    res.status(200).json({ companies });
   } catch (error) {
     res
       .status(500)
@@ -223,11 +246,11 @@ const sendEmail = async (to, name, subject, text) => {
 
   const mailOptions = {
     from: `"Placement Portal" <${process.env.EMAIL_USER}>`,
-    to,
+    to: to,
     subject: subject,
     html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd;">
-            <h2 style="color: #333;"></h2>
+            <h2 style="color: #333;">New Job Notification</h2>
             <p>Hello, ${name} </p>
             <p>${text}</p>
             <hr>
@@ -284,9 +307,11 @@ const updateApplicationStatus = async (req, res) => {
 
 module.exports = {
   addAdmin,
+  getAllAdmins,
   addStudent,
+  getAllStudents,
   addJob,
-  getJobs,
+  getAllJobs,
   getJobByCompany,
   addCompany,
   getAllCompanies,
