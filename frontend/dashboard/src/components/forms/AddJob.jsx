@@ -127,7 +127,7 @@ const AddJob = ({ logoutHandler }) => {
         setShowJobs(true);
         fetchJobs();
       } else {
-        console.error("failed to SS jobs:", data.error);
+        console.error("failed to Add jobs:", data.error);
         setMessage({
           type: "error",
           text: data.message || "Failed to add job",

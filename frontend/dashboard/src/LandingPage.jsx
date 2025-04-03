@@ -14,6 +14,7 @@ import AddCompany from "./components/forms/AddCompany";
 import Alert from "./components/Alert";
 import Confirm from "./components/Confirm";
 import UserWelcome from "./components/UserWelcome";
+import Profile from "./components/forms/Profile";
 
 const LandingPage = () => {
   const [activeLogin, setActiveLogin] = useState("");
@@ -202,6 +203,11 @@ const LandingPage = () => {
                     isLoggedIn &&
                     activeLogin === "admin" && (
                       <AddCompany logoutHandler={logoutHandler} />
+                    )}
+                  {currentPage === "profile" &&
+                    isLoggedIn &&
+                    activeLogin === "student" && (
+                      <Profile logoutHandler={logoutHandler} />
                     )}
                 </>
               )}

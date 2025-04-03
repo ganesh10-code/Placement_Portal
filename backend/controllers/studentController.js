@@ -162,10 +162,59 @@ const withdrawApplication = async (req, res) => {
   }
 };
 
+const getStudentDetails = async (req, res) => {
+  if (req.user.role != "student") {
+    return res.status(403).json({ message: "Access Denied" });
+  }
+  try {
+    const studentId = req.user.id; // Extracted from token via middleware
+
+    const student = await Student.findById(studentId).select("-password"); // Exclude password field
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res.status(200).json({ student });
+  } catch (error) {
+    console.error("Error fetching student profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+const updateProfile = async (req, res) => {
+  if (req.user.role != "student") {
+    return res.status(404).json({ message: "Access Denied" });
+  }
+  try {
+    const studentId = req.user.id;
+    const { skills, certifications, projects, experience, socialProfiles } =
+      req.body;
+
+    const updatedProfile = await Student.findByIdAndUpdate(
+      studentId,
+      { skills, certifications, projects, experience, socialProfiles },
+      { new: true }
+    );
+
+    if (!updatedProfile) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Profile updated successfully", updatedProfile });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 module.exports = {
   uploadResume,
   getResume,
   deleteResume,
   applyJob,
   withdrawApplication,
+  getStudentDetails,
+  updateProfile,
 };

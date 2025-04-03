@@ -18,5 +18,7 @@ router.post(
   verifyToken,
   studentController.withdrawApplication
 );
+router.get("/get_profile", verifyToken, studentController.getStudentDetails);
+router.put("/update_profile", verifyToken, studentController.updateProfile);
 
 module.exports = router;

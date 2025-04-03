@@ -12,7 +12,7 @@ const Navbar = ({
       <div className="flex">
         {isLoggedIn ? (
           <button
-            className="mx-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+            className="mx-2 px-4 py-2 bg-[#e86a20] text-white rounded-lg hover:bg-red-600 transition-all"
             onClick={logoutHandler}
           >
             Logout

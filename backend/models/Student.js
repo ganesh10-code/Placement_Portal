@@ -55,6 +55,26 @@ const studentSchema = new mongoose.Schema({
       appliedAt: { type: Date, default: Date.now },
     },
   ],
+  // ✅ Additional Profile Fields
+  skills: [{ type: String }], // Array of skills
+  certifications: [{ name: { type: String }, link: { type: String } }], // Array of certifications
+  projects: [
+    {
+      title: { type: String },
+      description: { type: String },
+      link: { type: String }, // Optional GitHub/Portfolio link
+    },
+  ],
+  experience: [
+    {
+      company: { type: String },
+      role: { type: String },
+      duration: { type: String }, // Example: "June 2023 - Dec 2023"
+      description: { type: String },
+    },
+  ],
+  // ✅ Social Profiles Field
+  socialProfiles: [{ name: { type: String }, link: { type: String } }],
 });
 
 const Student = mongoose.model("Student", studentSchema);

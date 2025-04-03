@@ -3,8 +3,9 @@ import {
   FaUser,
   FaFileUpload,
   FaBriefcase,
+  FaClipboardList,
+  FaBell,
   FaBuilding,
-  FaUserPlus,
 } from "react-icons/fa";
 
 const Sidebar = ({ activeLogin, handleNavigation, setShowUserWelcome }) => {
@@ -19,12 +20,12 @@ const Sidebar = ({ activeLogin, handleNavigation, setShowUserWelcome }) => {
       ? [
           {
             name: "Admins",
-            icon: <FaUserPlus />,
+            icon: <FaUser />,
             action: () => handleNavigation("Admins"),
           },
           {
             name: "Students",
-            icon: <FaUserPlus />,
+            icon: <FaUser />,
             action: () => handleNavigation("Students"),
           },
           {
@@ -53,6 +54,16 @@ const Sidebar = ({ activeLogin, handleNavigation, setShowUserWelcome }) => {
             name: "Find Jobs",
             icon: <FaBriefcase />,
             action: () => handleNavigation("findJobs"),
+          },
+          {
+            name: "My Applications",
+            icon: <FaClipboardList />,
+            action: () => handleNavigation("applications"),
+          },
+          {
+            name: "Job Notifications",
+            icon: <FaBell />,
+            action: () => handleNavigation("notifications"),
           },
         ];
 
