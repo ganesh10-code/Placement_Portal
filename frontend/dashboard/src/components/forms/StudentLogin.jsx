@@ -28,7 +28,7 @@ const StudentLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
         setPassword("");
         setTimeout(() => showSidebarHandler("student"), 500);
       } else {
-        setAlert({ type: "error", message: data.error });
+        setAlert({ type: "error", message: data.message });
       }
     } catch (error) {
       setAlert({ type: "error", message: "Something went wrong!" });

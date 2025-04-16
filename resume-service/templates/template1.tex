@@ -1,0 +1,69 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{hyperref}
+\pagenumbering{gobble}
+
+\titleformat{\section}{\large\bfseries}{}{0em}{}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \textbf{ {{ name }} }} \\
+    \href{mailto:{{ email }}}{{ email }} | {{ phoneNumber }}
+\end{center}
+
+\vspace{0.3cm}
+
+\section*{Education}
+{{ education.degree }} in {{ education.branch }} \\
+{{ education.year }} | CGPA: {{ education.cgpa }}
+
+{% if skills %}
+\section*{Skills}
+\begin{itemize}[leftmargin=*]
+    {% for skill in skills %}
+        \item {{ skill }}
+    {% endfor %}
+\end{itemize}
+{% endif %}
+
+{% if certifications %}
+\section*{Certifications}
+\begin{itemize}[leftmargin=*]
+    {% for cert in certifications %}
+        \item {{ cert }}
+    {% endfor %}
+\end{itemize}
+{% endif %}
+
+{% if projects %}
+\section*{Projects}
+\begin{itemize}[leftmargin=*]
+    {% for p in projects %}
+        \item \textbf{ {{ p.title }} }: {{ p.description }}
+    {% endfor %}
+\end{itemize}
+{% endif %}
+
+{% if experience %}
+\section*{Experience}
+\begin{itemize}[leftmargin=*]
+    {% for exp in experience %}
+        \item \textbf{ {{ exp.company }} } - {{ exp.role }} ({{ exp.duration }}) \\
+        {{ exp.description }}
+    {% endfor %}
+\end{itemize}
+{% endif %}
+
+{% if socialProfiles %}
+\section*{Links}
+\begin{itemize}[leftmargin=*]
+    {% for platform, link in socialProfiles.items() %}
+        \item \textbf{ {{ platform }} }: \href{ {{ link }} }{ {{ link }} }
+    {% endfor %}
+\end{itemize}
+{% endif %}
+
+\end{document}

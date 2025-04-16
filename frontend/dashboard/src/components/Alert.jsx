@@ -3,7 +3,7 @@ import React from "react";
 const Alert = ({ type, message, onClose }) => {
   const alertStyles = {
     success: "bg-green-100 border-green-500 text-green-700",
-    error: "bg-red-100 border-red-500 text-red-700",
+    error: "bg-red-500 border-red-500 text-white",
     warning: "bg-yellow-100 border-yellow-500 text-yellow-700",
   };
 

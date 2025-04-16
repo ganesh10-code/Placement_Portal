@@ -51,6 +51,7 @@ const LandingPage = () => {
     localStorage.removeItem("loginToken");
     localStorage.removeItem("activeLogin");
     localStorage.removeItem("email");
+    localStorage.removeItem("User");
     setIsLoggedIn(false);
     setActiveLogin(null);
     setShowLogin(false);

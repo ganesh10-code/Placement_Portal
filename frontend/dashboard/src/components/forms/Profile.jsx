@@ -12,12 +12,6 @@ const Profile = ({ logoutHandler }) => {
     socialProfiles: [{ name: "", link: "" }],
   });
   const [message, setMessage] = useState(null);
-  useEffect(() => {
-    if (message) {
-      const timer = setTimeout(() => setMessage(null), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [message]);
 
   useEffect(() => {
     const getStudentDetails = async () => {
@@ -30,28 +24,35 @@ const Profile = ({ logoutHandler }) => {
           setStudent(data.student);
           setFormData({
             skills: data.student.skills || [],
-            certifications: data.student.certifications.length
-              ? data.student.certifications
-              : [{ name: "", link: "" }],
-            projects: data.student.projects.length
-              ? data.student.projects
-              : [{ title: "", description: "", link: "" }],
-            experience: data.student.experience.length
-              ? data.student.experience
-              : [{ company: "", role: "", duration: "", description: "" }],
-            socialProfiles: data.student.socialProfiles.lenght
-              ? data.student.socialProfiles
-              : [{ name: "", link: "" }],
+            certifications: data.student.certifications || [],
+            projects: data.student.projects || [],
+            experience: data.student.experience || [],
+            socialProfiles: data.student.socialProfiles || [],
           });
         } else {
           console.error("Failed to fetch profile :", data.message);
+          setMessage({
+            type: "error",
+            text: data.message || "Failed to fetch profile",
+          });
         }
       } catch (error) {
         console.error("Error in fetching profile ", error);
+        setMessage({
+          type: "error",
+          text: "An error occurred fetching profile.",
+        });
       }
     };
     getStudentDetails();
   }, []);
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message]);
 
   const handleChange = (e, index, section, field) => {
     const updatedSection = [...formData[section]];
@@ -64,6 +65,17 @@ const Profile = ({ logoutHandler }) => {
   const handleRemoveField = (section, index) => {
     const updatedSection = formData[section].filter((_, i) => i !== index);
     setFormData({ ...formData, [section]: updatedSection });
+  };
+
+  const handleCancel = () => {
+    setEditing(false);
+    setFormData({
+      skills: student.skills || [],
+      certifications: student.certifications || [],
+      projects: student.projects || [],
+      experience: student.experience || [],
+      socialProfiles: student.socialProfiles || [],
+    });
   };
 
   const handleSave = async () => {
@@ -103,8 +115,10 @@ const Profile = ({ logoutHandler }) => {
     <div className="flex flex-col justify-center items-center p-6 bg-lightGray ">
       {message && (
         <p
-          className={`p-2 rounded ${
-            message.type === "success" ? "bg-green-200" : "bg-red-200"
+          className={`p-2 rounded font-semibold ${
+            message.type === "success"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
           }`}
         >
           {message.text}
@@ -172,11 +186,13 @@ const Profile = ({ logoutHandler }) => {
               <div className="mt-4">
                 <h3 className="font-semibold">Projects:</h3>
                 <ul>
-                  {student?.projects?.map((proj, i) => (
+                  {student?.projects?.map((project, i) => (
                     <li key={i}>
-                      <strong className="text-[#3E92CC]">{proj.title}</strong> -{" "}
-                      {proj.description}
-                      {proj.link && (
+                      <strong className="text-[#3E92CC]">
+                        {project.title}
+                      </strong>{" "}
+                      - {project.description}
+                      {project.link && (
                         <span>
                           {" "}
                           <a
@@ -210,7 +226,7 @@ const Profile = ({ logoutHandler }) => {
                 <ul>
                   {student?.socialProfiles?.map((prof, i) => (
                     <li key={i}>
-                      {prof.name} -{" "}
+                      <strong className="text-[#3E92CC]">{prof.name}</strong>-{" "}
                       <a
                         href={prof.link}
                         target="_blank"
@@ -440,9 +456,15 @@ const Profile = ({ logoutHandler }) => {
                 <div>
                   <button
                     onClick={handleSave}
-                    className="mt-4 bg-[#041931] text-white px-4 py-2 rounded"
+                    className="mt-4 px-4 py-2 rounded bg-[#041931] text-white"
                   >
-                    Save
+                    Save Profile
+                  </button>
+                  <button
+                    onClick={handleCancel}
+                    className="mt-2 ml-4 bg-gray-400 text-white px-4 py-2 rounded"
+                  >
+                    Cancel
                   </button>
                 </div>
               </div>

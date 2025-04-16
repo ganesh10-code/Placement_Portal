@@ -5,6 +5,7 @@
     "cors": "^2.8.5",
     "express-rate-limit": "^7.5.0",
     "express-slow-down": "^2.0.3",
+    "lodash": "^4.17.21",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.10.0"
   }
