@@ -1,0 +1,165 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.3) (preloaded format=pdflatex.fmt)
+ restricted \write18 enabled.
+entering extended mode
+(generated/160123737316_resume_20250419_223938.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/base\article.cls
+Document Class: article 2024/06/29 v1.4n Standard LaTeX document class
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/base\size10.clo))
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/base\inputenc.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/base\fontenc.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/base\textcomp.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/lm\lmodern.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/graphics\keyval.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/iftex\ifvtex.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/iftex\iftex.sty))
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/geometry\geometry.cfg)
+)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/titlesec\titlesec.sty)
+ (C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/enumitem\enumitem.sty
+)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/paralist\paralist.sty)
+ (C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hyperref.sty
+
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/kvsetkeys\kvsetkeys.st
+y)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/kvdefinekeys\kvdefin
+ekeys.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/pdfescape\pdfescape.
+sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/ltxcmds\ltxcmds.sty)
+
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/pdftexcmds\pdftexcmd
+s.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/infwarerr\infwarerr.
+sty)))
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/hycolor\hycolor.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\nameref.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/refcount\refcount.sty)
+
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/gettitlestring\getti
+tlestring.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/kvoptions\kvoptions.st
+y)))
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/etoolbox\etoolbox.sty)
+
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/stringenc\stringenc.
+sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\pd1enc.def)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/intcalc\intcalc.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\puenc.def)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/url\url.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/bitset\bitset.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/bigintcalc\bigintcal
+c.sty))
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/base\atbegshi-ltx.sty)
+) (C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/hyperref\hpdftex.def
+
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/base\atveryend-ltx.sty
+)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/rerunfilecheck\rerunfi
+lecheck.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/generic/uniquecounter\unique
+counter.sty)))
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/xcolor\xcolor.sty
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/graphics-cfg\color.cfg
+)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/graphics-def\pdftex.de
+f)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/graphics\mathcolor.ltx
+)) (C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\helvet.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\mathptmx.sty)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\t1ptm.fd)
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/l3backend\l3backend-pd
+ftex.def)
+No file 160123737316_resume_20250419_223938.aux.
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+
+(C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/context/base/mkii\supp-pdf.m
+kii
+[Loading MPS to PDF converter (version 2006.09.02).]
+) (C:\Users\LENOVO\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd)
+! Missing number, treated as zero.
+<to be read again> 
+                   \relax 
+l.32 \vspace
+            {0.3cm}
+! Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \relax 
+l.32 \vspace
+            {0.3cm}
+! Missing number, treated as zero.
+<to be read again> 
+                   \relax 
+l.37 \vspace
+            {0.3cm}
+! Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \relax 
+l.37 \vspace
+            {0.3cm}
+! Missing number, treated as zero.
+<to be read again> 
+                   \relax 
+l.42 \vspace
+            {0.3cm}
+! Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \relax 
+l.42 \vspace
+            {0.3cm}
+! Missing number, treated as zero.
+<to be read again> 
+                   \relax 
+l.47 \vspace
+            {0.3cm}
+! Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \relax 
+l.47 \vspace
+            {0.3cm}
+! Missing number, treated as zero.
+<to be read again> 
+                   \relax 
+l.52 \vspace
+            {0.3cm}
+! Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \relax 
+l.52 \vspace
+            {0.3cm}
+! Missing number, treated as zero.
+<to be read again> 
+                   \relax 
+l.57 \vspace
+            {0.3cm}
+! Illegal unit of measure (pt inserted).
+<to be read again> 
+                   \relax 
+l.57 \vspace
+            {0.3cm}
+
+[1{C:/Users/LENOVO/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/L
+ENOVO/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
+(C:\Users\LENOVO\OneDrive\Tài liệu\Placement_Portal\resume-service\generat
+ed\160123737316_resume_20250419_223938.aux)
+
+Package rerunfilecheck Warning: File `160123737316_resume_20250419_223938.out' 
+has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)<C:/Users/LENOVO/AppData/Lo
+cal/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/LENOVO/AppData/L
+ocal/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/LENOVO/AppData/
+Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on "C:\Users\LENOVO\OneDrive\Tài liệu\Placement_Portal\resu
+me-service\generated\160123737316_resume_20250419_223938.pdf" (1 page, 40869 by
+tes).
+Transcript written on "C:\Users\LENOVO\OneDrive\Tài liệu\Placement_Portal\
+resume-service\generated\160123737316_resume_20250419_223938.log".

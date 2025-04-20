@@ -15,6 +15,7 @@ import Alert from "./components/Alert";
 import Confirm from "./components/Confirm";
 import UserWelcome from "./components/UserWelcome";
 import Profile from "./components/forms/Profile";
+import ResumeGenerator from "./components/resume/ResumeGenerator";
 
 const LandingPage = () => {
   const [activeLogin, setActiveLogin] = useState("");
@@ -47,6 +48,7 @@ const LandingPage = () => {
   const logoutHandler = () => {
     setShowConfirm(true);
   };
+
   const confirmLogout = () => {
     localStorage.removeItem("loginToken");
     localStorage.removeItem("activeLogin");
@@ -61,14 +63,12 @@ const LandingPage = () => {
     setShowConfirm(false);
     setShowUserWelcome(false);
 
-    // Show styled alert
     setAlert({
       show: true,
       type: "success",
       message: "Logged out successfully!",
     });
 
-    // Hide alert after 3 seconds
     setTimeout(() => {
       setAlert({ show: false, type: "", message: "" });
     }, 3000);
@@ -81,6 +81,7 @@ const LandingPage = () => {
     setOtpVerified(false);
     setShowSidebar(false);
   };
+
   const showForgotPasswordHandler = () => {
     setShowLogin(false);
     setShowForgotPassword(true);
@@ -88,6 +89,7 @@ const LandingPage = () => {
     setShowWelcome(false);
     setShowSidebar(false);
   };
+
   const closeForgotPassword = () => {
     setShowForgotPassword(false);
     setShowLogin(true);
@@ -95,6 +97,7 @@ const LandingPage = () => {
     setShowWelcome(false);
     setShowSidebar(false);
   };
+
   const handleOtpVerified = () => {
     setOtpVerified(true);
     setShowForgotPassword(false);
@@ -102,6 +105,7 @@ const LandingPage = () => {
     setShowWelcome(false);
     setShowSidebar(false);
   };
+
   const showSidebarHandler = (role) => {
     setShowSidebar(true);
     setActiveLogin(role);
@@ -118,102 +122,107 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F4F4] flex flex-col">
-      <Navbar
-        setActiveLogin={setActiveLogin}
-        showLoginHandler={showLoginHandler}
-        isLoggedIn={isLoggedIn}
-        logoutHandler={logoutHandler}
-      />
-      {/* Styled Alert */}
-      {alert.show && (
-        <Alert
-          type={alert.type}
-          message={alert.message}
-          onClose={() => setAlert({ show: false })}
+    <div className="fixed top-0 left-0 w-full h-full z-0 bg-gradient-to-br from-[#0369a1] via-[#06b6d4] to-[#00ffcc]">
+      <div className="min-h-screen flex flex-col">
+        <Navbar
+          setActiveLogin={setActiveLogin}
+          showLoginHandler={showLoginHandler}
+          isLoggedIn={isLoggedIn}
+          logoutHandler={logoutHandler}
         />
-      )}
-      {showWelcome && <Welcome />}
-
-      <div className="flex flex-grow h-[calc(100vh-80px)] overflow-hidden">
-        <div className="z-50">
-          {/* Confirm Logout Modal */}
-          <Confirm
-            isOpen={showConfirm}
-            onClose={() => setShowConfirm(false)}
-            onConfirm={confirmLogout}
-            title="Logout Confirmation "
-            message="Are you sure you want to logout? "
-            confirmText="Logout"
-          />
-        </div>
-        {isLoggedIn && (
-          <Sidebar
-            activeLogin={activeLogin}
-            handleNavigation={handleNavigation}
-            setShowUserWelcome={setShowUserWelcome}
+        {alert.show && (
+          <Alert
+            type={alert.type}
+            message={alert.message}
+            onClose={() => setAlert({ show: false })}
           />
         )}
+        {showWelcome && <Welcome />}
 
-        <div
-          className={`flex-1 p-3 overflow-auto pt-[80px] ${
-            isLoggedIn ? "ml-[250px]" : "flex justify-center items-center"
-          }`}
-        >
-          {!isLoggedIn &&
-            showLogin &&
-            (activeLogin === "admin" ? (
-              <AdminLogin
-                showForgotPasswordHandler={showForgotPasswordHandler}
-                showSidebarHandler={showSidebarHandler}
-              />
-            ) : (
-              <StudentLogin
-                showForgotPasswordHandler={showForgotPasswordHandler}
-                showSidebarHandler={showSidebarHandler}
-              />
-            ))}
-          {showForgotPassword && (
-            <ForgotPassword
-              onClose={closeForgotPassword}
-              onOtpVerified={handleOtpVerified}
+        <div className="flex flex-grow h-[calc(100vh-80px)] overflow-hidden">
+          <div className="z-50">
+            <Confirm
+              isOpen={showConfirm}
+              onClose={() => setShowConfirm(false)}
+              onConfirm={confirmLogout}
+              title="Logout Confirmation"
+              message="Are you sure you want to logout?"
+              confirmText="Logout"
+            />
+          </div>
+          {isLoggedIn && (
+            <Sidebar
+              activeLogin={activeLogin}
+              handleNavigation={handleNavigation}
+              setShowUserWelcome={setShowUserWelcome}
             />
           )}
-          {isLoggedIn && (
-            <div className="relative bg-white shadow-md rounded-lg p-3 pt-0 h-full  overflow-auto">
-              {showUserWelcome ? (
-                <UserWelcome role={activeLogin} name={User} />
+
+          <div
+            className={`flex-1 p-3 overflow-auto pt-[80px] ${
+              isLoggedIn ? "ml-[250px]" : "flex justify-center items-center"
+            }`}
+          >
+            {!isLoggedIn &&
+              showLogin &&
+              (activeLogin === "admin" ? (
+                <AdminLogin
+                  showForgotPasswordHandler={showForgotPasswordHandler}
+                  showSidebarHandler={showSidebarHandler}
+                />
               ) : (
-                <>
-                  {currentPage === "Admins" &&
-                    isLoggedIn &&
-                    activeLogin === "admin" && (
-                      <AddAdmin logoutHandler={logoutHandler} />
-                    )}
-                  {currentPage === "Students" &&
-                    isLoggedIn &&
-                    activeLogin === "admin" && (
-                      <AddStudent logoutHandler={logoutHandler} />
-                    )}
-                  {currentPage === "Jobs" &&
-                    isLoggedIn &&
-                    activeLogin === "admin" && (
-                      <AddJob logoutHandler={logoutHandler} />
-                    )}
-                  {currentPage === "Companies" &&
-                    isLoggedIn &&
-                    activeLogin === "admin" && (
-                      <AddCompany logoutHandler={logoutHandler} />
-                    )}
-                  {currentPage === "profile" &&
-                    isLoggedIn &&
-                    activeLogin === "student" && (
-                      <Profile logoutHandler={logoutHandler} />
-                    )}
-                </>
-              )}
-            </div>
-          )}
+                <StudentLogin
+                  showForgotPasswordHandler={showForgotPasswordHandler}
+                  showSidebarHandler={showSidebarHandler}
+                />
+              ))}
+            {showForgotPassword && (
+              <ForgotPassword
+                onClose={closeForgotPassword}
+                onOtpVerified={handleOtpVerified}
+              />
+            )}
+            {isLoggedIn && (
+              <div className="relative bg-transparent shadow-md rounded-lg p-3 pt-0 h-full overflow-auto">
+                {showUserWelcome ? (
+                  <UserWelcome role={activeLogin} name={User} />
+                ) : (
+                  <>
+                    {currentPage === "Admins" &&
+                      isLoggedIn &&
+                      activeLogin === "admin" && (
+                        <AddAdmin logoutHandler={logoutHandler} />
+                      )}
+                    {currentPage === "Students" &&
+                      isLoggedIn &&
+                      activeLogin === "admin" && (
+                        <AddStudent logoutHandler={logoutHandler} />
+                      )}
+                    {currentPage === "Jobs" &&
+                      isLoggedIn &&
+                      activeLogin === "admin" && (
+                        <AddJob logoutHandler={logoutHandler} />
+                      )}
+                    {currentPage === "Companies" &&
+                      isLoggedIn &&
+                      activeLogin === "admin" && (
+                        <AddCompany logoutHandler={logoutHandler} />
+                      )}
+                    {currentPage === "profile" &&
+                      isLoggedIn &&
+                      activeLogin === "student" && (
+                        <Profile logoutHandler={logoutHandler} />
+                      )}
+                    {currentPage === "resume" &&
+                      isLoggedIn &&
+                      activeLogin === "student" && (
+                        <ResumeGenerator logoutHandler={logoutHandler} />
+                      )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

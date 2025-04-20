@@ -73,7 +73,7 @@ const AddAdmin = ({ logoutHandler }) => {
         </p>
       )}
       {!showForm ? (
-        <div className="p-3 bg-white rounded-lg shadow-lg w-full mt-10">
+        <div className="p-3 bg-white/10 backdrop-blur-md shadow-lg rounded-xl  border border-white/30 rounded-lg  w-full mt-10">
           <h2 className="text-2xl font-bold text-[#1E1E1E] text-center mb-4">
             Admin List
           </h2>

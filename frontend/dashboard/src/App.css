@@ -25,3 +25,34 @@
 .animate-slideIn {
   animation: slideIn 0.5s ease-out forwards;
 }
+
+/* Force the Particles canvas to be visible */
+#tsparticles {
+  background-color: #041931 !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  z-index: 0 !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Ensure the parent container supports the Particles */
+.relative.w-full.h-screen {
+  background-color: #041931;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ensure the main content is transparent */
+.z-10.min-h-screen {
+  background: transparent;
+}
+
+/* Prevent canvas from being hidden */
+canvas {
+  display: block !important;
+  visibility: visible !important;
+}

@@ -28,7 +28,7 @@ const StudentLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
         setPassword("");
         setTimeout(() => showSidebarHandler("student"), 500);
       } else {
-        setAlert({ type: "error", message: data.message });
+        setAlert({ type: "error", message: data.error });
       }
     } catch (error) {
       setAlert({ type: "error", message: "Something went wrong!" });
@@ -36,7 +36,7 @@ const StudentLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
     }
   };
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg w-96 transition-all animate-fadeIn">
+    <div className="p-6 bg-white/30 border border-white rounded-lg shadow-lg w-96 transition-all animate-fadeIn">
       {alert && (
         <Alert
           type={alert.type}

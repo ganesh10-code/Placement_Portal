@@ -36,7 +36,7 @@ const AdminLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
     }
   };
   return (
-    <div className="p-6 bg-white rounded-lg shadow-lg w-96 transition-all animate-fadeIn">
+    <div className="p-6 bg-white/30 backdrop-blur-md border border-white rounded-lg shadow-lg w-96 transition-all animate-fadeIn">
       {alert && (
         <Alert
           type={alert.type}

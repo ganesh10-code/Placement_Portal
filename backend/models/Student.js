@@ -20,9 +20,11 @@ const studentSchema = new mongoose.Schema({
     required: true,
   },
   education: {
+    institute: { type: String },
     degree: { type: String },
     branch: { type: String },
-    year: { type: Number },
+    startYear: { type: Number },
+    endYear: { type: Number },
     cgpa: { type: Number },
   },
   phoneNumber: {
@@ -69,7 +71,7 @@ const studentSchema = new mongoose.Schema({
     {
       company: { type: String },
       role: { type: String },
-      duration: { type: String }, // Example: "June 2023 - Dec 2023"
+      duration: { type: String },
       description: { type: String },
     },
   ],
