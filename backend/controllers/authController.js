@@ -117,7 +117,9 @@ const studentLogin = async (req, res) => {
 const resetPassword = async (req, res) => {
   const { email, currentPassword, password } = req.body;
   const user =
-    (await Admin.findOne({ email })) || (await Student.findOne({ email }));
+    (await Admin.findOne({ email })) ||
+    (await Student.findOne({ personalMail: email })) ||
+    (await Student.findOne({ officialMail: email }));
   if (!user) return res.status(400).json({ message: "User not found" });
 
   const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -132,7 +134,9 @@ const resetPassword = async (req, res) => {
 const sendOTP = async (req, res) => {
   const { email } = req.body;
   const user =
-    (await Student.findOne({ email })) || (await Admin.findOne({ email }));
+    (await Admin.findOne({ email })) ||
+    (await Student.findOne({ personalMail: email })) ||
+    (await Student.findOne({ officialMail: email }));
   if (!user) {
     return res.status(400).json({ message: "User not found" });
   }
@@ -171,7 +175,9 @@ const sendOTP = async (req, res) => {
 const verifyOTP = async (req, res) => {
   const { email, otp, newPassword } = req.body;
   const user =
-    (await Student.findOne({ email })) || (await Admin.findOne({ email }));
+    (await Admin.findOne({ email })) ||
+    (await Student.findOne({ personalMail: email })) ||
+    (await Student.findOne({ officialMail: email }));
   if (!user || user.otp !== otp || user.otpExpires < Date.now()) {
     return res.status(400).json({ message: "Invalid or expired OTP" });
   }

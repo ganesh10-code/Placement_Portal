@@ -52,12 +52,14 @@ const ForgotPassword = ({ onClose, onOtpVerified }) => {
       if (response.ok) {
         setAlert({
           type: "success",
-          message: "Password Change! Please login again",
+          message: "Password Changed! Please login again",
         });
         console.log(data.message);
         localStorage.removeItem("email");
-        onOtpVerified();
-        onClose(); // Close the modal
+        setTimeout(() => {
+          onOtpVerified();
+          onclose();
+        }, 2000); // Close the modal
       } else {
         setAlert({ type: "error", message: data.message });
       }
