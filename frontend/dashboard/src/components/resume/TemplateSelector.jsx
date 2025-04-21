@@ -2,7 +2,7 @@ import React from "react";
 
 const templates = [
   { name: "Template 1", file: "template1.tex" },
-  { name: "Template 2", file: "template3.tex" },
+  { name: "Template 2", file: "template2.tex" },
   //   { name: "Ganesh's Template", file: "ganesh_template.tex" }
 ];
 

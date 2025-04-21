@@ -1,68 +1,94 @@
-\documentclass{article}
+\documentclass[a4paper,10pt]{article}
 \usepackage[margin=1in]{geometry}
-\usepackage{enumitem}
 \usepackage{titlesec}
-\usepackage{hyperref}
-\pagenumbering{gobble}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{setspace}
+\usepackage{tabularx}
 
-\titleformat{\section}{\large\bfseries}{}{0em}{}
+\titleformat{\section}{\Large\bfseries\color{blue}}{}{0em}{}[\titlerule]
+\setlength{\parskip}{0.5em}
+\setlength{\parindent}{0pt}
 
 \begin{document}
+\pagestyle{empty}
 
+% === Header ===
 \begin{center}
-    {\LARGE \textbf{ {{ name }} }} \\
-    \href{mailto:{{ email }}}{{ email }} | {{ phoneNumber }}
+    {\LARGE \textbf{ {{ name }} }}\\
+    \href{mailto: {{ email }} }{{ email }} \quad | \quad {{ phoneNumber }} \\
 \end{center}
 
-\vspace{0.3cm}
-
+% === Education ===
 \section*{Education}
-{{ education.degree }} in {{ education.branch }} \\
-{{ education.year }} | CGPA: {{ education.cgpa }}
+{% for edu in education %}
+    \textbf{ {{ edu.institute }} } \quad  {{ edu.startYear }} - {{ edu.endYear }} \\
+    {  } {{ edu.degree }} in {{ edu.branch }} \\
+    {  }  CGPA: {{ edu.cgpa }}
+{% endfor %}
 
+% === Skills ===
 {% if skills %}
 \section*{Skills}
 \begin{itemize}[leftmargin=*]
-    {% for skill in skills %}
-        \item {{ skill }}
-    {% endfor %}
+  {% for skill in skills %}
+    \item {{ skill }}
+  {% endfor %}
 \end{itemize}
 {% endif %}
 
+% === Certifications ===
 {% if certifications %}
 \section*{Certifications}
 \begin{itemize}[leftmargin=*]
-    {% for cert in certifications %}
-        \item {{ cert }}
-    {% endfor %}
+  {% for cert in certifications %}
+    \item \textbf{ {{ cert.name }} } {-}\href{ {{ cert.link }} }{ {{ cert.link }} } \hfill{ {{ cert.date }} }
+  {% endfor %}
 \end{itemize}
 {% endif %}
 
+% === Projects ===
 {% if projects %}
 \section*{Projects}
 \begin{itemize}[leftmargin=*]
-    {% for p in projects %}
-        \item \textbf{ {{ p.title }} }: {{ p.description }}
-    {% endfor %}
+  {% for project in projects %}
+    \item \textbf{ {{ project.title }} }\\
+    \textit{Tech Stack: {{ project.techStack }} }%
+    {% if project.link %}\\
+    \textit{Link: \href{ {{ project.link }} }{ {{ project.link }} }}%
+    {% endif %}
+
+    \vspace{-0.5em} % Reduce vertical space before the sublist
+    \begin{itemize}[leftmargin=1.5em, itemsep=0pt, topsep=0pt]
+      {% for bullet in project.description %}
+        \item {{ bullet }}
+      {% endfor %}
+    \end{itemize}
+    \vspace{-0.5em} % Reduce space after sublist
+  {% endfor %}
 \end{itemize}
 {% endif %}
 
+
+% === Experience ===
 {% if experience %}
 \section*{Experience}
 \begin{itemize}[leftmargin=*]
     {% for exp in experience %}
-        \item \textbf{ {{ exp.company }} } - {{ exp.role }} ({{ exp.duration }}) \\
-        {{ exp.description }}
+    \item \textbf{ {{ exp.role }} } at \textbf{ {{ exp.company }} } \hfill {{ exp.duration }} \\
+    {{ exp.description }}
     {% endfor %}
 \end{itemize}
 {% endif %}
 
+% === Social Profiles ===
 {% if socialProfiles %}
-\section*{Links}
+\section*{Social Profiles}
 \begin{itemize}[leftmargin=*]
-    {% for platform, link in socialProfiles.items() %}
-        \item \textbf{ {{ platform }} }: \href{ {{ link }} }{ {{ link }} }
-    {% endfor %}
+  {% for profile in socialProfiles %}
+    \item \textbf{ {{ profile.name }} }: \href{ {{ profile.link }} }{ {{ profile.link }} }
+  {% endfor %}
 \end{itemize}
 {% endif %}
 

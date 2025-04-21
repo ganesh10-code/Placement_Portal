@@ -5,11 +5,22 @@ const Profile = ({ logoutHandler }) => {
   const [student, setStudent] = useState(null);
   const [editing, setEditing] = useState(false);
   const [formData, setFormData] = useState({
+    personalMail: "",
     skills: [],
     certifications: [{ name: "", link: "" }],
     projects: [{ title: "", description: "", link: "" }],
     experience: [{ company: "", role: "", duration: "", description: "" }],
     socialProfiles: [{ name: "", link: "" }],
+    educationList: [
+      {
+        institute: "",
+        degree: "",
+        branch: "",
+        startYear: "",
+        endYear: "",
+        cgpa: "",
+      },
+    ],
   });
   const [message, setMessage] = useState(null);
 
@@ -23,11 +34,13 @@ const Profile = ({ logoutHandler }) => {
         if (response.ok && data.student) {
           setStudent(data.student);
           setFormData({
+            personalMail: data.student.personalMail || "",
             skills: data.student.skills || [],
             certifications: data.student.certifications || [],
             projects: data.student.projects || [],
             experience: data.student.experience || [],
             socialProfiles: data.student.socialProfiles || [],
+            educationList: data.student.education.slice(1) || [],
           });
         } else {
           console.error("Failed to fetch profile :", data.message);
@@ -54,14 +67,48 @@ const Profile = ({ logoutHandler }) => {
     }
   }, [message]);
 
+  const handleEducationChange = (index, field, value) => {
+    const newEducationList = [...formData.educationList];
+    newEducationList[index][field] = value;
+    setFormData({ ...formData, educationList: newEducationList });
+  };
+
+  const addEducationField = () => {
+    setFormData({
+      ...formData,
+      educationList: [
+        ...formData.educationList,
+        {
+          institute: "",
+          degree: "",
+          branch: "",
+          startYear: "",
+          endYear: "",
+          cgpa: "",
+        },
+      ],
+    });
+  };
+
+  const removeEducationField = (indexToRemove) => {
+    setFormData({
+      ...formData,
+      educationList: formData.educationList.filter(
+        (_, i) => i !== indexToRemove
+      ),
+    });
+  };
+
   const handleChange = (e, index, section, field) => {
     const updatedSection = [...formData[section]];
     updatedSection[index][field] = e.target.value;
     setFormData({ ...formData, [section]: updatedSection });
   };
+
   const handleAddField = (section, emptyObj) => {
     setFormData({ ...formData, [section]: [...formData[section], emptyObj] });
   };
+
   const handleRemoveField = (section, index) => {
     const updatedSection = formData[section].filter((_, i) => i !== index);
     setFormData({ ...formData, [section]: updatedSection });
@@ -70,11 +117,13 @@ const Profile = ({ logoutHandler }) => {
   const handleCancel = () => {
     setEditing(false);
     setFormData({
+      personalMail: student.personalMail || "",
       skills: student.skills || [],
       certifications: student.certifications || [],
       projects: student.projects || [],
       experience: student.experience || [],
       socialProfiles: student.socialProfiles || [],
+      educationList: student.education.slice(1) || [], // Ensure educationList is reset properly
     });
   };
 
@@ -96,14 +145,14 @@ const Profile = ({ logoutHandler }) => {
         setStudent(data.updatedProfile);
         setEditing(false);
       } else {
-        console.log("failed to update profile");
+        console.log("Failed to update profile");
         setMessage({
           type: "error",
-          text: data.message || "failed to update profile",
+          text: data.message || "Failed to update profile",
         });
       }
     } catch (error) {
-      console.error("Error in adding job:", error);
+      console.error("Error in updating profile:", error);
       setMessage({
         type: "error",
         text: "An error occurred. Please try again.",
@@ -112,7 +161,7 @@ const Profile = ({ logoutHandler }) => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center p-6 bg-lightGray ">
+    <div className="flex flex-col justify-center items-center p-6  ">
       {message && (
         <p
           className={`p-2 rounded font-semibold ${
@@ -139,34 +188,76 @@ const Profile = ({ logoutHandler }) => {
                 <strong>Roll No:</strong> {student.rollno}
               </p>
               <p>
-                <strong>Degree:</strong> {student.education.degree}
+                <strong>Degree:</strong> {student.education[0].degree}
               </p>
               <p>
-                <strong>Branch:</strong> {student.education.branch}
+                <strong>Branch:</strong> {student.education[0].branch}
               </p>
               <p>
-                <strong>Year:</strong> {student.education.year}
+                <strong>Year:</strong> {student.education[0].startYear} -{" "}
+                {student.education[0].endYear}
               </p>
               <p>
-                <strong>CGPA:</strong> {student.education.cgpa}
-              </p>
-              <p>
-                <strong>Email:</strong> {student.email}
+                <strong>CGPA:</strong> {student.education[0].cgpa}
               </p>
               <p>
                 <strong>Phone:</strong> {student.phoneNumber}
               </p>
-
+              <p>
+                <strong>Official Mail:</strong> {student.officialMail}
+              </p>
+              <p>
+                <strong>Personal Mail:</strong> {student.personalMail}
+              </p>
               <div className="mt-4">
-                <h3 className="font-semibold">Skills:</h3>
+                <h3 className="font-semibold">
+                  <strong>Previous Education Details:</strong>
+                </h3>
+                {student?.education && student?.education?.length > 1 ? (
+                  student?.education?.slice(1).map((edu, i) => (
+                    <div key={i} className="mb-2">
+                      <p>
+                        <strong>Institute:</strong>
+                        {edu.institute}
+                      </p>
+                      <p>
+                        <strong>Degree:</strong> {edu.degree}
+                      </p>
+                      <p>
+                        <strong>Branch:</strong> {edu.branch}
+                      </p>
+                      <p>
+                        <strong>Duration:</strong> {edu.startYear} -
+                        {edu.endYear}
+                      </p>
+                      <p>
+                        <strong>CGPA:</strong> {edu.cgpa}
+                      </p>
+                      <hr className="my-2" />
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">
+                    No previous education details available.
+                  </p>
+                )}
+              </div>
+              <div className="mt-4">
+                <h3 className="font-semibold">
+                  <strong>Skills:</strong>
+                </h3>
                 <ul>
                   {student?.skills?.map((skill, i) => (
-                    <li key={i}>{skill}</li>
+                    <li key={i}>
+                      <strong className="text-[#06b6d4]">{skill}</strong>
+                    </li>
                   ))}
                 </ul>
               </div>
               <div className="mt-4">
-                <h3 className="font-semibold">Certifications:</h3>
+                <h3 className="font-semibold">
+                  <strong>Certifications:</strong>
+                </h3>
                 <ul>
                   {student?.certifications?.map((cert, i) => (
                     <li key={i}>
@@ -184,7 +275,9 @@ const Profile = ({ logoutHandler }) => {
                 </ul>
               </div>
               <div className="mt-4">
-                <h3 className="font-semibold">Projects:</h3>
+                <h3 className="font-semibold">
+                  <strong>Projects:</strong>
+                </h3>
                 <ul>
                   {student?.projects?.map((project, i) => (
                     <li key={i}>
@@ -210,7 +303,9 @@ const Profile = ({ logoutHandler }) => {
                 </ul>
               </div>
               <div className="mt-4">
-                <h3 className="font-semibold">Experience:</h3>
+                <h3 className="font-semibold">
+                  <strong>Experience:</strong>
+                </h3>
                 <ul>
                   {student?.experience?.map((exp, i) => (
                     <li key={i}>
@@ -222,7 +317,9 @@ const Profile = ({ logoutHandler }) => {
                 </ul>
               </div>
               <div className="mt-4">
-                <h3 className="font-semibold">Social Profiles:</h3>
+                <h3 className="font-semibold">
+                  <strong>Social Profiles:</strong>
+                </h3>
                 <ul>
                   {student?.socialProfiles?.map((prof, i) => (
                     <li key={i}>
@@ -249,10 +346,97 @@ const Profile = ({ logoutHandler }) => {
             </div>
           ) : (
             <div>
-              <h3 className="font-semibold">Edit Additional Details</h3>
-
+              <h2 className="font-semibold text-[#0369a1]">
+                Edit Additional Details
+              </h2>
+              {/*personalMail */}
+              <h3 className="font-semibold mt-4">Personal Mail</h3>
+              <input
+                type="text"
+                value={formData.personalMail}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    personalMail: e.target.value,
+                  })
+                }
+                className="border p-2 w-full"
+              />
+              <h3 className="font-semibold mt-4">Previous Education Details</h3>
+              {formData.educationList.map((edu, index) => (
+                <div key={index} className="grid grid-cols-2 gap-4 mb-4">
+                  <input
+                    type="text"
+                    placeholder="Institute"
+                    value={edu.institute}
+                    onChange={(e) =>
+                      handleEducationChange(index, "institute", e.target.value)
+                    }
+                    className="border p-2 w-full"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Degree"
+                    value={edu.degree}
+                    onChange={(e) =>
+                      handleEducationChange(index, "degree", e.target.value)
+                    }
+                    className="border p-2 w-full"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Branch"
+                    value={edu.branch}
+                    onChange={(e) =>
+                      handleEducationChange(index, "branch", e.target.value)
+                    }
+                    className="border p-2 w-full"
+                  />
+                  <input
+                    type="number"
+                    placeholder="Start Year"
+                    value={edu.startYear}
+                    onChange={(e) =>
+                      handleEducationChange(index, "startYear", e.target.value)
+                    }
+                    className="border p-2 w-full"
+                  />
+                  <input
+                    type="number"
+                    placeholder="End Year"
+                    value={edu.endYear}
+                    onChange={(e) =>
+                      handleEducationChange(index, "endYear", e.target.value)
+                    }
+                    className="border p-2 w-full"
+                  />
+                  <input
+                    type="number"
+                    step="0.01"
+                    placeholder="CGPA"
+                    value={edu.cgpa}
+                    onChange={(e) =>
+                      handleEducationChange(index, "cgpa", e.target.value)
+                    }
+                    className="border p-2 w-full"
+                  />
+                  <button
+                    onClick={() => removeEducationField(index)}
+                    className="bg-red-600 text-white p-2 text-center rounded"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={addEducationField}
+                className="bg-[#3E92CC] text-white p-2 text-center rounded"
+              >
+                + Add Education
+              </button>
               {/* Skills */}
-              <label>Skills:</label>
+              <h3 className="font-semibold mt-4">Skills</h3>
               <input
                 type="text"
                 value={formData.skills.join(", ")}

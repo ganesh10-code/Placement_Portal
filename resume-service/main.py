@@ -41,16 +41,33 @@ def generate_resume(req: ResumeRequest):
             "phoneNumber": req.studentData.get("phoneNumber"),
             "education": req.studentData.get("education"),
         })
-
+        
+        filtered_data["selectedSections"] = req.selectedSections
+        cleaned_data = clean_data(filtered_data)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         fileName = f"{filtered_data['rollNo']}_resume_{timestamp}"
-        pdf_path = render_latex(req.template, filtered_data, fileName)
+        pdf_path = render_latex(req.template, cleaned_data, fileName)
 
         return {"resumeId": fileName, "message": "Resume generated", "url": f"/preview/{fileName}"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+def clean_data(data):
+    def strip_quotes(val):
+        if isinstance(val, str):
+            return val.strip('"')
+        elif isinstance(val, list):
+            return [strip_quotes(v) for v in val]
+        elif isinstance(val, dict):
+            return {k: strip_quotes(v) for k, v in val.items()}
+        return val
+    def sanitize_string(val, str):
+        return val.strip().strip('"').strip("'")  
+
+    return strip_quotes(data)
+
 @app.get("/preview/{resume_id}")
+
 def preview_resume(resume_id: str):
     pdf_path = f"generated/{resume_id}.pdf"
     if not os.path.exists(pdf_path):

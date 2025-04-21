@@ -6,11 +6,14 @@ from jinja2 import Environment, FileSystemLoader
 TEMPLATE_DIR = "templates"
 OUTPUT_DIR = "generated"
 
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
 # ✅ Strip weird Unicode combining marks (like \u0300)
 def sanitize_unicode(text: str) -> str:
     return unicodedata.normalize("NFKD", text).encode("utf-8", "ignore").decode("utf-8")
+
 
 def render_latex(template_name: str, data: dict, output_filename: str) -> str:
     tex_file = os.path.join(OUTPUT_DIR, f"{output_filename}.tex")

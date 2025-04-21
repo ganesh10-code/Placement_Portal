@@ -10,7 +10,12 @@ const studentSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  email: {
+  officialMail: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  personalMail: {
     type: String,
     required: true,
     unique: true,
@@ -19,14 +24,16 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  education: {
-    institute: { type: String },
-    degree: { type: String },
-    branch: { type: String },
-    startYear: { type: Number },
-    endYear: { type: Number },
-    cgpa: { type: Number },
-  },
+  education: [
+    {
+      institute: { type: String },
+      degree: { type: String },
+      branch: { type: String },
+      startYear: { type: Number },
+      endYear: { type: Number },
+      cgpa: { type: Number },
+    },
+  ],
   phoneNumber: {
     type: String,
     required: true,
@@ -59,11 +66,14 @@ const studentSchema = new mongoose.Schema({
   ],
   // ✅ Additional Profile Fields
   skills: [{ type: String }], // Array of skills
-  certifications: [{ name: { type: String }, link: { type: String } }], // Array of certifications
+  certifications: [
+    { name: { type: String }, link: { type: String }, date: { type: String } },
+  ], // Array of certifications
   projects: [
     {
       title: { type: String },
-      description: { type: String },
+      description: [{ type: String }],
+      techStack: { type: String },
       link: { type: String }, // Optional GitHub/Portfolio link
     },
   ],

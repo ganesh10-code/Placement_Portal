@@ -17,7 +17,7 @@ const UserWelcome = ({ role, name }) => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="flex flex-col items-center justify-center p-6 bg-white/10 backdrop-blur-md shadow-lg rounded-xl  border border-white/30 w-full max-w-xl mx-auto mt-6"
+      className="flex flex-col items-center justify-center p-6 bg-white/30 backdrop-blur-md shadow-lg rounded-xl  border border-white/30 w-full max-w-xl mx-auto mt-6"
     >
       <motion.div
         initial={{ scale: 0 }}

@@ -5,6 +5,7 @@ const {
   otpLimiter,
 } = require("../middleware/rateLimit");
 const express = require("express");
+const validatePasswordMiddleware = require("../middleware/validatePassword");
 
 const router = express.Router();
 
@@ -21,7 +22,12 @@ router.post(
   loginSlowDown,
   authController.studentLogin
 );
-router.post("/reset_password", otpLimiter, authController.resetPassword);
+router.post(
+  "/reset_password",
+  otpLimiter,
+  validatePasswordMiddleware,
+  authController.resetPassword
+);
 router.post("/send_otp", otpLimiter, authController.sendOTP);
 router.post("/verify_otp", otpLimiter, authController.verifyOTP);
 router.post("/refresh_token", authController.refreshAccessToken);

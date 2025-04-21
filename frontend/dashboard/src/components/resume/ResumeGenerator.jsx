@@ -42,25 +42,27 @@ const ResumeGenerator = ({ logoutHandler }) => {
     return {
       name: profile.name,
       rollNo: profile.rollno,
-      email: profile.email,
+      email: profile.personalMail,
       phoneNumber: profile.phoneNumber,
       education: profile.education,
       skills: profile.skills || [],
+
       certifications: (profile.certifications || []).map((c) => ({
         name: c.name,
-        date: c.date || "N/A",
+        link: c.link || "",
+        date: c.date || "",
       })),
+
       projects: (profile.projects || []).map((p) => ({
         title: p.title,
-        tech: p.link || "N/A",
-        date: "N/A",
-        description: p.description ? [p.description] : [],
+        techStack: p.techStack || "", // ✅ this matches the LaTeX template
+        link: p.link || "", // ✅ explicitly added
+        date: p.date || "",
+        description: p.description || [],
       })),
+
       experience: profile.experience || [],
-      socialProfiles: (profile.socialProfiles || []).reduce((acc, sp) => {
-        acc[sp.name] = sp.link;
-        return acc;
-      }, {}),
+      socialProfiles: profile.socialProfiles || [],
     };
   };
 
@@ -98,8 +100,8 @@ const ResumeGenerator = ({ logoutHandler }) => {
     return <div className="text-red-600 p-4">Loading student profile...</div>;
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Generate Your Resume</h2>
+    <div className="mt-3 p-6 bg-white">
+      <h2 className="text-2xl font-bold mb-3">Generate Your Resume</h2>
 
       <TemplateSelector
         selected={selectedTemplate}

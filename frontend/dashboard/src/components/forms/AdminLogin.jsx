@@ -28,7 +28,7 @@ const AdminLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
         setPassword("");
         setTimeout(() => showSidebarHandler("admin"), 500);
       } else {
-        setAlert({ type: "error", message: data.message });
+        setAlert({ type: "warning", message: data.message });
       }
     } catch (error) {
       setAlert({ type: "error", message: "Something went wrong!" });
@@ -36,7 +36,7 @@ const AdminLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
     }
   };
   return (
-    <div className="p-6 bg-white/30 backdrop-blur-md border border-white rounded-lg shadow-lg w-96 transition-all animate-fadeIn">
+    <div>
       {alert && (
         <Alert
           type={alert.type}
@@ -44,37 +44,39 @@ const AdminLogin = ({ showForgotPasswordHandler, showSidebarHandler }) => {
           onClose={() => setAlert(null)}
         />
       )}
-      <h2 className="text-2xl font-bold text-[#1E1E1E] text-center mb-4">
-        Admin Login
-      </h2>
-      <form onSubmit={adminLoginHandler}>
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-2 border border-gray-300 rounded-lg mb-3"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-2 border border-gray-300 rounded-lg mb-3"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="w-full bg-[#041931] text-white py-2 rounded-lg hover:bg-[#3E9200] transition-all"
+      <div className="p-6 bg-white/30 backdrop-blur-md border border-white rounded-lg shadow-lg w-96 transition-all animate-fadeIn">
+        <h2 className="text-2xl font-bold text-[#1E1E1E] text-center mb-4">
+          Admin Login
+        </h2>
+        <form onSubmit={adminLoginHandler}>
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-2 border border-gray-300 rounded-lg mb-3"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-2 border border-gray-300 rounded-lg mb-3"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="w-full bg-[#041931] text-white py-2 rounded-lg hover:bg-[#3E9200] transition-all"
+          >
+            Login
+          </button>
+        </form>
+        <p
+          className="text-center mt-4 text-blue-600 cursor-pointer"
+          onClick={showForgotPasswordHandler}
         >
-          Login
-        </button>
-      </form>
-      <p
-        className="text-center mt-4 text-blue-600 cursor-pointer"
-        onClick={showForgotPasswordHandler}
-      >
-        Forgot Password?
-      </p>
+          Forgot Password?
+        </p>
+      </div>
     </div>
   );
 };

@@ -61,7 +61,7 @@ const adminLogin = async (req, res) => {
   try {
     const admin = await Admin.findOne({ email });
     if (!admin || !(await bcrypt.compare(password, admin.password))) {
-      return res.status(401).json({ error: "Invalid email or password" });
+      return res.status(400).json({ message: "Invalid email or password" });
     }
     const accessToken = generateAccessToken(admin._id, "admin");
     const refreshToken = generateRefreshToken(admin._id, "admin");
@@ -90,7 +90,7 @@ const studentLogin = async (req, res) => {
   try {
     const student = await Student.findOne({ rollno });
     if (!student || !(await bcrypt.compare(password, student.password))) {
-      return res.status(400).json({ error: "Invalid rollno or password" });
+      return res.status(400).json({ message: "Invalid rollno or password" });
     }
     const accessToken = generateAccessToken(student._id, "student");
     const refreshToken = generateRefreshToken(student._id, "student");
@@ -115,7 +115,7 @@ const studentLogin = async (req, res) => {
 
 //reset password
 const resetPassword = async (req, res) => {
-  const { email, currentPassword, newPassword } = req.body;
+  const { email, currentPassword, password } = req.body;
   const user =
     (await Admin.findOne({ email })) || (await Student.findOne({ email }));
   if (!user) return res.status(400).json({ message: "User not found" });
@@ -124,7 +124,7 @@ const resetPassword = async (req, res) => {
   if (!isMatch)
     return res.status(400).json({ message: "Current password is incorrect" });
 
-  user.password = await bcrypt.hash(newPassword, 10);
+  user.password = await bcrypt.hash(password, 10);
   await user.save();
   res.json({ message: "Password updated successfully" });
 };

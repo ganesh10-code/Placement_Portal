@@ -3,7 +3,7 @@ const slowDown = require("express-slow-down");
 
 // Rate limiter for login endpoints
 const loginLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 10 * 60 * 1000, // 10 minutes
   max: 5, // Allow only 5 attempts per window per IP
   message: {
     status: 429,

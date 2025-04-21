@@ -1,11 +1,22 @@
 const adminController = require("../controllers/adminController");
+const validatePasswordMiddleware = require("../middleware/validatePassword");
 const verifyToken = require("../middleware/verifyToken");
 const express = require("express");
 const router = express.Router();
 
-router.post("/add_admin", verifyToken, adminController.addAdmin);
+router.post(
+  "/add_admin",
+  validatePasswordMiddleware,
+  verifyToken,
+  adminController.addAdmin
+);
 router.get("/get_all_admins", verifyToken, adminController.getAllAdmins);
-router.post("/add_student", verifyToken, adminController.addStudent);
+router.post(
+  "/add_student",
+  validatePasswordMiddleware,
+  verifyToken,
+  adminController.addStudent
+);
 router.get("/get_all_students", verifyToken, adminController.getAllStudents);
 router.post("/add_job", verifyToken, adminController.addJob);
 router.get("/get_all_jobs", verifyToken, adminController.getAllJobs);

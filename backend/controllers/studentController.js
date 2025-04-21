@@ -187,12 +187,32 @@ const updateProfile = async (req, res) => {
   }
   try {
     const studentId = req.user.id;
-    const { skills, certifications, projects, experience, socialProfiles } =
-      req.body;
+    const {
+      personalMail,
+      skills,
+      certifications,
+      projects,
+      experience,
+      socialProfiles,
+      educationList,
+    } = req.body;
+
+    const updateData = {
+      personalMail,
+      skills,
+      certifications,
+      projects,
+      experience,
+      socialProfiles,
+    };
+    if (educationList) {
+      // Optional: Push new entries instead of overwriting
+      updateData.$push = { education: { $each: educationList } };
+    }
 
     const updatedProfile = await Student.findByIdAndUpdate(
       studentId,
-      { skills, certifications, projects, experience, socialProfiles },
+      updateData,
       { new: true }
     );
 
