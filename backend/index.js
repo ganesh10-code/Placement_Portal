@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes.js");
 const studentRoutes = require("./routes/studentRoutes.js");
+const visitRoutes = require("./routes/visitRoutes");
 const path = require("path");
 
 const { createInitialAdmin } = require("./controllers/authController.js");
@@ -31,6 +32,7 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use("/auth", authRoutes);
 app.use("/admin", adminRoutes);
 app.use("/student", studentRoutes);
+app.use("/visit", visitRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server Started and running at ${PORT} `);
