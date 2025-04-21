@@ -12,13 +12,9 @@ const studentSchema = new mongoose.Schema({
   },
   officialMail: {
     type: String,
-    required: true,
-    unique: true,
   },
   personalMail: {
     type: String,
-    required: true,
-    unique: true,
   },
   password: {
     type: String,

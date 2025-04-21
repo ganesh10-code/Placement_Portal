@@ -80,7 +80,7 @@ const AddStudent = ({ logoutHandler }) => {
       } else {
         setMessage({
           type: "error",
-          text: data.message || "Failed to add admin",
+          text: data.error || "Failed to add admin",
         });
       }
     } catch (error) {
