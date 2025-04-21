@@ -49,7 +49,8 @@ const addStudent = async (req, res) => {
   if (req.user.role != "admin") {
     return res.status(404).json({ message: "Access Denied" });
   }
-  const { name, rollno, email, password, education, phoneNumber } = req.body;
+  const { name, rollno, officialMail, password, education, phoneNumber } =
+    req.body;
   try {
     const studentRollno = await Student.findOne({ rollno });
     if (studentRollno) {
@@ -59,7 +60,7 @@ const addStudent = async (req, res) => {
     const newStudent = new Student({
       name,
       rollno,
-      email,
+      officialMail,
       password: hashedPassword,
       education,
       phoneNumber,
