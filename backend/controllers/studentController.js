@@ -182,9 +182,10 @@ const getStudentDetails = async (req, res) => {
   }
 };
 const updateProfile = async (req, res) => {
-  if (req.user.role != "student") {
-    return res.status(404).json({ message: "Access Denied" });
+  if (req.user.role !== "student") {
+    return res.status(403).json({ message: "Access Denied" });
   }
+
   try {
     const studentId = req.user.id;
     const {
@@ -194,8 +195,22 @@ const updateProfile = async (req, res) => {
       projects,
       experience,
       socialProfiles,
-      educationList,
+      educationList, // This contains updated student-added entries (index 1 onwards)
     } = req.body;
+
+    // Fetch the student document to get the existing education
+    const student = await Student.findById(studentId);
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const originalEducation = student.education || [];
+    const preservedAdminEducation =
+      originalEducation.length > 0 ? [originalEducation[0]] : [];
+
+    const updatedEducation = preservedAdminEducation.concat(
+      educationList || []
+    );
 
     const updateData = {
       personalMail,
@@ -204,11 +219,8 @@ const updateProfile = async (req, res) => {
       projects,
       experience,
       socialProfiles,
+      education: updatedEducation, // Full replacement with preserved first item
     };
-    if (educationList) {
-      // Optional: Push new entries instead of overwriting
-      updateData.$push = { education: { $each: educationList } };
-    }
 
     const updatedProfile = await Student.findByIdAndUpdate(
       studentId,
@@ -216,13 +228,10 @@ const updateProfile = async (req, res) => {
       { new: true }
     );
 
-    if (!updatedProfile) {
-      return res.status(404).json({ message: "Student not found" });
-    }
-
-    res
-      .status(200)
-      .json({ message: "Profile updated successfully", updatedProfile });
+    res.status(200).json({
+      message: "Profile updated successfully",
+      updatedProfile,
+    });
   } catch (error) {
     console.error("Error updating profile:", error);
     res.status(500).json({ message: "Server error" });

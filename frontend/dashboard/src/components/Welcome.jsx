@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 const Welcome = () => {
   const [visitCount, setVisitCount] = useState(0);
@@ -7,9 +6,11 @@ const Welcome = () => {
   useEffect(() => {
     const fetchAndIncrementVisitCount = async () => {
       try {
-        // Increment visit count on the server
-        const incrementResponse = await axios.post("http://localhost:4000/visit/increment");
-        setVisitCount(incrementResponse.data.count);
+        const response = await fetch("http://localhost:4000/visit/increment", {
+          method: "POST",
+        });
+        const data = await response.json(); // Parse JSON from response
+        setVisitCount(data.count); // Access 'count' from parsed data
       } catch (error) {
         console.error("Error fetching or incrementing visit count:", error);
       }
@@ -27,7 +28,9 @@ const Welcome = () => {
         Your Gateway to Career Opportunities
       </h2>
       <p className="text-lg mb-4">Please select your login type.</p>
-      <p className="text-sm text-white/80">Total Visits: {visitCount}</p>
+      <h2 className=" text-[#e09722]">
+        <strong>Total Visits: {visitCount}</strong>
+      </h2>
     </div>
   );
 };

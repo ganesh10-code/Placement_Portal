@@ -67,38 +67,6 @@ const Profile = ({ logoutHandler }) => {
     }
   }, [message]);
 
-  const handleEducationChange = (index, field, value) => {
-    const newEducationList = [...formData.educationList];
-    newEducationList[index][field] = value;
-    setFormData({ ...formData, educationList: newEducationList });
-  };
-
-  const addEducationField = () => {
-    setFormData({
-      ...formData,
-      educationList: [
-        ...formData.educationList,
-        {
-          institute: "",
-          degree: "",
-          branch: "",
-          startYear: "",
-          endYear: "",
-          cgpa: "",
-        },
-      ],
-    });
-  };
-
-  const removeEducationField = (indexToRemove) => {
-    setFormData({
-      ...formData,
-      educationList: formData.educationList.filter(
-        (_, i) => i !== indexToRemove
-      ),
-    });
-  };
-
   const handleChange = (e, index, section, field) => {
     const updatedSection = [...formData[section]];
     updatedSection[index][field] = e.target.value;
@@ -370,7 +338,7 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="Institute"
                     value={edu.institute}
                     onChange={(e) =>
-                      handleEducationChange(index, "institute", e.target.value)
+                      handleChange(e, index, "educationList", "institute")
                     }
                     className="border p-2 w-full"
                   />
@@ -379,7 +347,7 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="Degree"
                     value={edu.degree}
                     onChange={(e) =>
-                      handleEducationChange(index, "degree", e.target.value)
+                      handleChange(e, "educationList", index, "degree")
                     }
                     className="border p-2 w-full"
                   />
@@ -388,7 +356,7 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="Branch"
                     value={edu.branch}
                     onChange={(e) =>
-                      handleEducationChange(index, "branch", e.target.value)
+                      handleChange(e, "educationList", index, "branch")
                     }
                     className="border p-2 w-full"
                   />
@@ -397,7 +365,7 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="Start Year"
                     value={edu.startYear}
                     onChange={(e) =>
-                      handleEducationChange(index, "startYear", e.target.value)
+                      handleChange(e, "educationList", index, "startYear")
                     }
                     className="border p-2 w-full"
                   />
@@ -406,7 +374,7 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="End Year"
                     value={edu.endYear}
                     onChange={(e) =>
-                      handleEducationChange(index, "endYear", e.target.value)
+                      handleChange(e, "educationList", index, "endYear")
                     }
                     className="border p-2 w-full"
                   />
@@ -416,12 +384,12 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="CGPA"
                     value={edu.cgpa}
                     onChange={(e) =>
-                      handleEducationChange(index, "cgpa", e.target.value)
+                      handleChange(e, "educationList", index, "cgpa")
                     }
                     className="border p-2 w-full"
                   />
                   <button
-                    onClick={() => removeEducationField(index)}
+                    onClick={() => handleRemoveField("educationList", index)}
                     className="bg-red-600 text-white p-2 text-center rounded"
                   >
                     Remove
@@ -430,7 +398,16 @@ const Profile = ({ logoutHandler }) => {
               ))}
               <button
                 type="button"
-                onClick={addEducationField}
+                onClick={() =>
+                  handleAddField("educationList", {
+                    institute: "",
+                    degree: "",
+                    branch: "",
+                    startYear: "",
+                    endYear: "",
+                    cgpa: "",
+                  })
+                }
                 className="bg-[#3E92CC] text-white p-2 text-center rounded"
               >
                 + Add Education
