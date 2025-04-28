@@ -25,6 +25,14 @@
   
 \end{center}
 
+%Objective Section%  
+{% if 'objective' in selectedSections or objective %}    
+\section*{Objective}
+\noindent
+{{ objective }}
+\vspace{0.3cm}
+{% endif %}
+
 % Education Section
 \section*{Education}
 {% for edu in education %}

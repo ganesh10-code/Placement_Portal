@@ -4,7 +4,7 @@ import SectionSelector from "./SectionSelector";
 import ResumePreview from "./ResumePreview";
 import { fetchWithAuth } from "../../../utilities/api";
 
-const ResumeGenerator = ({ logoutHandler }) => {
+const ResumeGenerator = ({ logoutHandler, handleNavigation }) => {
   const [selectedTemplate, setSelectedTemplate] = useState("template1.tex");
   const [selectedSections, setSelectedSections] = useState([
     "skills",
@@ -16,6 +16,9 @@ const ResumeGenerator = ({ logoutHandler }) => {
   const [resumeId, setResumeId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [studentProfile, setStudentProfile] = useState(null);
+  const [jobDescription, setJobDescription] = useState("");
+  const [aiObjective, setAiObjective] = useState("");
+  const [manualEditObjective, setManualEditObjective] = useState("");
 
   useEffect(() => {
     const fetchStudent = async () => {
@@ -66,6 +69,29 @@ const ResumeGenerator = ({ logoutHandler }) => {
     };
   };
 
+  const handleGenerateObjective = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:8000/generate-objective", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ profile: studentProfile, jobDescription }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setAiObjective(data.objective);
+        setManualEditObjective(data.objective);
+      } else {
+        alert(data.error || "Failed to generate objective.");
+      }
+    } catch (error) {
+      console.error("Error generating objective:", error);
+      alert("Error generating objective.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGenerate = async () => {
     setLoading(true);
     try {
@@ -78,6 +104,7 @@ const ResumeGenerator = ({ logoutHandler }) => {
           studentData: formattedData,
           template: selectedTemplate,
           selectedSections,
+          objective: manualEditObjective,
         }),
       });
 
@@ -98,28 +125,84 @@ const ResumeGenerator = ({ logoutHandler }) => {
 
   if (!studentProfile)
     return <div className="text-red-600 p-4">Loading student profile...</div>;
-
+  const templateImage = `/public/templates/${selectedTemplate.replace(
+    ".tex",
+    ".jpg"
+  )}`;
   return (
     <div className="mt-3 p-6 bg-white">
-      <h2 className="text-2xl font-bold mb-3">Generate Your Resume</h2>
-
-      <TemplateSelector
-        selected={selectedTemplate}
-        setSelected={setSelectedTemplate}
-      />
-      <SectionSelector
-        selectedSections={selectedSections}
-        setSelectedSections={setSelectedSections}
-      />
-
+      {/* Back Button */}
       <button
-        className="bg-[#041931] text-white px-6 py-2 rounded mt-4 disabled:opacity-60"
-        onClick={handleGenerate}
-        disabled={loading}
+        onClick={() => handleNavigation("resumeMain")}
+        className="flex items-center text-gray-600 hover:text-blue-600 mb-6 transition"
       >
-        {loading ? "Generating..." : "Generate Resume"}
+        ⬅️ Back
       </button>
+      <h2 className="text-2xl font-bold mb-3">Generate Your Resume</h2>
+      <div className="flex gap-10">
+        {/* Left Side: Form Inputs */}
+        <div className="flex-1">
+          <TemplateSelector
+            selected={selectedTemplate}
+            setSelected={setSelectedTemplate}
+          />
+          <SectionSelector
+            selectedSections={selectedSections}
+            setSelectedSections={setSelectedSections}
+            jobDescription={jobDescription}
+            setJobDescription={setJobDescription}
+          />
+          {selectedSections.includes("objective") && aiObjective && (
+            <div className="mt-4">
+              <label className="text-lg font-semibold mb-2">
+                Edit Objective (optional)
+              </label>
+              <textarea
+                className="border p-2 w-full"
+                value={manualEditObjective}
+                onChange={(e) => setManualEditObjective(e.target.value)}
+                rows={5}
+              />
+            </div>
+          )}
+          <div className="flex gap-4 mt-4">
+            {selectedSections.includes("objective") && (
+              <button
+                className="bg-blue-600 text-white px-6 py-2 rounded disabled:opacity-60"
+                onClick={handleGenerateObjective}
+                disabled={loading}
+              >
+                {loading ? "Generating Objective..." : "Generate Objective"}
+              </button>
+            )}
+          </div>
+        </div>
 
+        {/* Right Side: Template Preview + Button */}
+        <div className="flex flex-col items-center w-1/3">
+          <img
+            src={templateImage}
+            alt="Template Preview"
+            style={{ height: "500px" }}
+            className="border rounded shadow-md w-full object-contain mb-4"
+          />
+          <button
+            className="bg-[#041931] text-white px-6 py-2 rounded disabled:opacity-60"
+            onClick={handleGenerate}
+            disabled={loading || !manualEditObjective}
+          >
+            {loading ? "Generating..." : "Generate Resume"}
+          </button>
+        </div>
+      </div>
+      {isLoading && (
+        <div className="flex flex-col items-center mt-6">
+          <Spinner />
+          <p className="text-gray-500 mt-4">
+            Generating your resume, please wait...
+          </p>
+        </div>
+      )}
       {resumeId && (
         <div className="bg-black text-white mt-6">
           <h3 className="text-lg font-semibold mb-2">Preview:</h3>

@@ -48,7 +48,7 @@ const Sidebar = ({ activeLogin, handleNavigation, setShowUserWelcome }) => {
           {
             name: "Resume",
             icon: <FaFileUpload />,
-            action: () => handleNavigation("resume"),
+            action: () => handleNavigation("resumeMain"),
           },
           {
             name: "Find Jobs",

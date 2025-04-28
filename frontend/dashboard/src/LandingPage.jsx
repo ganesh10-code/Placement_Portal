@@ -15,6 +15,8 @@ import Alert from "./components/Alert";
 import Confirm from "./components/Confirm";
 import UserWelcome from "./components/UserWelcome";
 import Profile from "./components/forms/Profile";
+import ResumeMain from "./components/resume/ResumeMain";
+import ResumeScorer from "./components/resume/ResumeScorer";
 import ResumeGenerator from "./components/resume/ResumeGenerator";
 
 const LandingPage = () => {
@@ -213,10 +215,26 @@ const LandingPage = () => {
                       activeLogin === "student" && (
                         <Profile logoutHandler={logoutHandler} />
                       )}
-                    {currentPage === "resume" &&
+                    {currentPage === "resumeMain" &&
                       isLoggedIn &&
                       activeLogin === "student" && (
-                        <ResumeGenerator logoutHandler={logoutHandler} />
+                        <ResumeMain handleNavigation={handleNavigation} />
+                      )}
+                    {currentPage === "resumeGenerator" &&
+                      isLoggedIn &&
+                      activeLogin === "student" && (
+                        <ResumeGenerator
+                          logoutHandler={logoutHandler}
+                          handleNavigation={handleNavigation}
+                        />
+                      )}
+                    {currentPage === "resumeScorer" &&
+                      isLoggedIn &&
+                      activeLogin === "student" && (
+                        <ResumeScorer
+                          logoutHandler={logoutHandler}
+                          handleNavigation={handleNavigation}
+                        />
                       )}
                   </>
                 )}

@@ -20,6 +20,15 @@
     \href{mailto: {{ email }} }{{ email }} \quad | \quad {{ phoneNumber }} \\
 \end{center}
 
+
+%Objective Section%  
+{% if 'objective' in selectedSections or objective %}    
+\section*{Objective}
+\noindent
+{{ objective }}
+\vspace{0.3cm}
+{% endif %}
+
 % === Education ===
 \section*{Education}
 {% for edu in education %}

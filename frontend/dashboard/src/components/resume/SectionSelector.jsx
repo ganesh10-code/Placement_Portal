@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 const allSections = [
+  "objective",
   "skills",
   "projects",
   "certifications",
@@ -8,7 +9,12 @@ const allSections = [
   "socialProfiles",
 ];
 
-const SectionSelector = ({ selectedSections, setSelectedSections }) => {
+const SectionSelector = ({
+  selectedSections,
+  setSelectedSections,
+  jobDescription,
+  setJobDescription,
+}) => {
   const toggleSection = (section) => {
     if (selectedSections.includes(section)) {
       setSelectedSections(selectedSections.filter((s) => s !== section));
@@ -33,6 +39,22 @@ const SectionSelector = ({ selectedSections, setSelectedSections }) => {
           </label>
         ))}
       </div>
+      <br />
+      {selectedSections.includes("objective") && (
+        <>
+          <div>
+            <h3 className="text-lg font-semibold mb-2">
+              Enter Job Description
+            </h3>
+            <textarea
+              placeholder="Enter Job Description for Objective generation"
+              value={jobDescription}
+              onChange={(e) => setJobDescription(e.target.value)}
+              className="border p-2 mt-2 w-full"
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };
