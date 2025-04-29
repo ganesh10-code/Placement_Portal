@@ -18,6 +18,7 @@ import Profile from "./components/forms/Profile";
 import ResumeMain from "./components/resume/ResumeMain";
 import ResumeScorer from "./components/resume/ResumeScorer";
 import ResumeGenerator from "./components/resume/ResumeGenerator";
+import EligibleJobs from "./components/EligibleJobs";
 
 const LandingPage = () => {
   const [activeLogin, setActiveLogin] = useState("");
@@ -232,6 +233,14 @@ const LandingPage = () => {
                       isLoggedIn &&
                       activeLogin === "student" && (
                         <ResumeScorer
+                          logoutHandler={logoutHandler}
+                          handleNavigation={handleNavigation}
+                        />
+                      )}
+                    {currentPage === "findJobs" &&
+                      isLoggedIn &&
+                      activeLogin === "student" && (
+                        <EligibleJobs
                           logoutHandler={logoutHandler}
                           handleNavigation={handleNavigation}
                         />

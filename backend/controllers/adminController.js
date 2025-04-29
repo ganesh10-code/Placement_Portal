@@ -130,14 +130,22 @@ const addJob = async (req, res) => {
     const students = await Student.find(); // Fetch all students
     students.forEach(async (student) => {
       let shouldSendEmail = false;
-      const studentCGPA = student.education.cgpa;
-      const studentBranch = student.education.branch;
+      const studentCGPA = student.education[0].cgpa;
+      const studentBranch = student.education[0].branch;
       const allowedBranches = eligibilityCriteria.allowedBranches || [];
 
       // Check if the student meets the eligibility criteria
       const isEligible =
         studentCGPA >= eligibilityCriteria.minCGPA &&
         allowedBranches.includes(studentBranch);
+
+      if (!isEligible) {
+        return;
+      } // skip rest
+      if (!student.eligibleJobs.includes(newJob._id)) {
+        student.eligibleJobs.push(newJob._id);
+        await student.save();
+      }
 
       if (company.isPopular) {
         shouldSendEmail = true; // Popular company, send to all eligible students

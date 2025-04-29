@@ -78,6 +78,23 @@ const deleteResume = async (req, res) => {
   }
 };
 
+// eligible-jobs
+const getEligibleJobs = async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const student = await Student.findById(studentId).populate({
+      path: "eligibleJobs",
+      populate: { path: "companyId", model: "Company" },
+    });
+
+    res.status(200).json({ jobs: student.eligibleJobs });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Failed to fetch eligible jobs", error: err.message });
+  }
+};
+
 const applyJob = async (req, res) => {
   if (req.user.role != "student") {
     return res.status(404).json({ message: "Access Denied" });
@@ -242,6 +259,7 @@ module.exports = {
   uploadResume,
   getResume,
   deleteResume,
+  getEligibleJobs,
   applyJob,
   withdrawApplication,
   getStudentDetails,

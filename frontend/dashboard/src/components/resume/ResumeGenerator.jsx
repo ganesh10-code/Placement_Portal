@@ -3,6 +3,7 @@ import TemplateSelector from "./TemplateSelector";
 import SectionSelector from "./SectionSelector";
 import ResumePreview from "./ResumePreview";
 import { fetchWithAuth } from "../../../utilities/api";
+import Spinner from "../spinner";
 
 const ResumeGenerator = ({ logoutHandler, handleNavigation }) => {
   const [selectedTemplate, setSelectedTemplate] = useState("template1.tex");
@@ -14,7 +15,7 @@ const ResumeGenerator = ({ logoutHandler, handleNavigation }) => {
     "socialProfiles",
   ]);
   const [resumeId, setResumeId] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [studentProfile, setStudentProfile] = useState(null);
   const [jobDescription, setJobDescription] = useState("");
   const [aiObjective, setAiObjective] = useState("");
@@ -125,7 +126,7 @@ const ResumeGenerator = ({ logoutHandler, handleNavigation }) => {
 
   if (!studentProfile)
     return <div className="text-red-600 p-4">Loading student profile...</div>;
-  const templateImage = `/public/templates/${selectedTemplate.replace(
+  const templateImage = `/templates/${selectedTemplate.replace(
     ".tex",
     ".jpg"
   )}`;
@@ -170,9 +171,9 @@ const ResumeGenerator = ({ logoutHandler, handleNavigation }) => {
               <button
                 className="bg-blue-600 text-white px-6 py-2 rounded disabled:opacity-60"
                 onClick={handleGenerateObjective}
-                disabled={loading}
+                disabled={isLoading}
               >
-                {loading ? "Generating Objective..." : "Generate Objective"}
+                {isLoading ? "Generating Objective..." : "Generate Objective"}
               </button>
             )}
           </div>
@@ -189,9 +190,9 @@ const ResumeGenerator = ({ logoutHandler, handleNavigation }) => {
           <button
             className="bg-[#041931] text-white px-6 py-2 rounded disabled:opacity-60"
             onClick={handleGenerate}
-            disabled={loading || !manualEditObjective}
+            disabled={isLoading || !manualEditObjective}
           >
-            {loading ? "Generating..." : "Generate Resume"}
+            {isLoading ? "Generating..." : "Generate Resume"}
           </button>
         </div>
       </div>

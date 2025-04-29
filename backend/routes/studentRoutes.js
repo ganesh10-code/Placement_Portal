@@ -12,6 +12,7 @@ router.post(
 );
 router.get("/get_resume", verifyToken, studentController.getResume);
 router.delete("/delete_resume", verifyToken, studentController.deleteResume);
+router.get("/eligible_jobs", verifyToken, studentController.getEligibleJobs);
 router.post("/apply_job/:jobId", verifyToken, studentController.applyJob);
 router.post(
   "/withdraw_application/:jobId",

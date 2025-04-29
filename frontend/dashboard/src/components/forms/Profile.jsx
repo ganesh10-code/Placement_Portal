@@ -7,8 +7,8 @@ const Profile = ({ logoutHandler }) => {
   const [formData, setFormData] = useState({
     personalMail: "",
     skills: [],
-    certifications: [{ name: "", link: "" }],
-    projects: [{ title: "", description: "", link: "" }],
+    certifications: [{ name: "", link: "", date: "" }],
+    projects: [{ title: "", description: "", link: "", techStack: "" }],
     experience: [{ company: "", role: "", duration: "", description: "" }],
     socialProfiles: [{ name: "", link: "" }],
     educationList: [
@@ -229,7 +229,7 @@ const Profile = ({ logoutHandler }) => {
                 <ul>
                   {student?.certifications?.map((cert, i) => (
                     <li key={i}>
-                      {cert.name} -{" "}
+                      {cert.name} - {cert.date}-{" "}
                       <a
                         href={cert.link}
                         target="_blank"
@@ -248,11 +248,18 @@ const Profile = ({ logoutHandler }) => {
                 </h3>
                 <ul>
                   {student?.projects?.map((project, i) => (
-                    <li key={i}>
+                    <li key={i} className="mb-2">
                       <strong className="text-[#3E92CC]">
                         {project.title}
                       </strong>{" "}
-                      - {project.description}
+                      -{" "}
+                      {project.techStack && (
+                        <span className="text-gray-500">
+                          {" "}
+                          (Tech Stack: {project.techStack})
+                        </span>
+                      )}{" "}
+                      -{" "}
                       {project.link && (
                         <span>
                           {" "}
@@ -266,10 +273,13 @@ const Profile = ({ logoutHandler }) => {
                           </a>
                         </span>
                       )}
+                      <br />
+                      {project.description}
                     </li>
                   ))}
                 </ul>
               </div>
+
               <div className="mt-4">
                 <h3 className="font-semibold">
                   <strong>Experience:</strong>
@@ -448,6 +458,15 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="Link"
                     className="border p-2 w-full"
                   />
+                  <input
+                    type="text"
+                    value={cert.date}
+                    onChange={(e) =>
+                      handleChange(e, index, "certifications", "date")
+                    }
+                    placeholder="date"
+                    className="border p-2 w-full"
+                  />
                   <button
                     onClick={() => handleRemoveField("certifications", index)}
                     className="bg-red-600 text-white p-2 text-center rounded"
@@ -458,7 +477,11 @@ const Profile = ({ logoutHandler }) => {
               ))}
               <button
                 onClick={() =>
-                  handleAddField("certifications", { name: "", link: "" })
+                  handleAddField("certifications", {
+                    name: "",
+                    link: "",
+                    date: "",
+                  })
                 }
                 className="bg-[#3E92CC] text-white p-2 text-center rounded"
               >
@@ -494,6 +517,15 @@ const Profile = ({ logoutHandler }) => {
                     placeholder="Project Link"
                     className="border p-2 w-full"
                   />
+                  <input
+                    type="techStack"
+                    value={proj.techStack}
+                    onChange={(e) =>
+                      handleChange(e, index, "projects", "techStack")
+                    }
+                    placeholder="Project Tech Stack"
+                    className="border p-2 w-full"
+                  />
                   <button
                     onClick={() => handleRemoveField("projects", index)}
                     className="bg-red-600 text-white p-2 text-center rounded"
@@ -508,6 +540,7 @@ const Profile = ({ logoutHandler }) => {
                     title: "",
                     description: "",
                     link: "",
+                    techStack: "",
                   })
                 }
                 className="bg-[#3E92CC] text-white p-2 text-center rounded"
