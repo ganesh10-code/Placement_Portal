@@ -8,7 +8,12 @@ const express = require("express");
 const validatePasswordMiddleware = require("../middleware/validatePassword");
 
 const router = express.Router();
-
+router.post(
+  "/admin_register",
+  loginLimiter,
+  loginSlowDown,
+  authController.adminRegister
+);
 router.post(
   "/admin_login",
   loginLimiter,

@@ -5,45 +5,57 @@ const Job = require("../models/Job");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 
-//Add Admin
-const addAdmin = async (req, res) => {
-  if (req.user.role != "admin") {
-    return res.status(404).json({ message: "Access Denied" });
-  }
-  console.log(req.user);
-  const { name, email, password } = req.body;
-  try {
-    const adminEmail = await Admin.findOne({ email });
-    if (adminEmail) {
-      return res.status(400).json("Email already exists");
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newAdmin = new Admin({
-      name,
-      email,
-      password: hashedPassword,
-    });
-    await newAdmin.save();
-    res.status(201).json({ message: "Admin Added Successfully" });
-    console.log("Admin Added");
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 //get all admins
 const getAllAdmins = async (req, res) => {
   if (req.user.role != "admin") {
     return res.status(404).json({ message: "Access Denied" });
   }
   try {
-    const admins = await Admin.find({}, "name email"); // Fetch only name and email
+    const admins = await Admin.find({ status: "accepted" }).select("-password");
     res.status(200).json({ admins });
   } catch (error) {
     res.status(500).json({ message: "Failed to fetch admins" });
   }
 };
 
+const getPendingRegistrations = async (req, res) => {
+  if (req.user.role != "admin") {
+    return res.status(404).json({ message: "Access Denied" });
+  }
+  try {
+    const registrations = await Admin.find({ status: "pending" }).select(
+      "-password"
+    );
+    res.status(200).json({ registrations });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch registrations" });
+  }
+};
+//Handle Registration
+const handleRegistration = async (req, res) => {
+  if (req.user.role != "admin") {
+    return res.status(404).json({ message: "Access Denied" });
+  }
+  const { id, decision } = req.body;
+  try {
+    const admin = await Admin.findById(id);
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    if (decision === "accept") {
+      admin.status = "accepted";
+      await admin.save();
+      res.status(200).json({ message: "Registration accepted" });
+    } else if (decision === "reject") {
+      await Admin.findByIdAndDelete(id);
+      res.status(200).json({ message: "Registration rejected" });
+    } else {
+      res.status(400).json({ message: "Invalid decision" });
+    }
+  } catch (error) {
+    console.error("❌ Error in handleRegistration:", error);
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
 //add student
 const addStudent = async (req, res) => {
   if (req.user.role != "admin") {
@@ -101,6 +113,8 @@ const addJob = async (req, res) => {
       location,
       salary,
       eligibilityCriteria,
+      applyLink,
+      jobType,
       deadline,
     } = req.body;
 
@@ -116,6 +130,8 @@ const addJob = async (req, res) => {
       location,
       salary,
       eligibilityCriteria,
+      applyLink,
+      jobType,
       deadline,
       postedBy: req.user.id, // Admin adding the job
     });
@@ -141,7 +157,10 @@ const addJob = async (req, res) => {
 
       if (!isEligible) {
         return;
-      } // skip rest
+      }
+      if (!Array.isArray(student.eligibleJobs)) {
+        student.eligibleJobs = [];
+      }
       if (!student.eligibleJobs.includes(newJob._id)) {
         student.eligibleJobs.push(newJob._id);
         await student.save();
@@ -163,11 +182,50 @@ const addJob = async (req, res) => {
       }
 
       if (shouldSendEmail) {
+        if (!student.eligibleJobs.includes(newJob._id)) {
+          student.eligibleJobs.push(newJob._id);
+          await student.save();
+        }
+
+        const emailBody = `
+          <p>Dear ${student.name},</p>
+      
+          <p>We are pleased to inform you about a new job opportunity that aligns with your profile:</p>
+      
+          <table style="border-collapse: collapse; font-size: 15px;">
+            <tr>
+              <td style="padding: 4px 8px;"><strong>Company:</strong></td>
+              <td style="padding: 4px 8px;">${company.name}</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 8px;"><strong>Position:</strong></td>
+              <td style="padding: 4px 8px;">${role}</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 8px;"><strong>Location:</strong></td>
+              <td style="padding: 4px 8px;">${location}</td>
+            </tr>
+            <tr>
+              <td style="padding: 4px 8px;"><strong>Salary Package:</strong></td>
+              <td style="padding: 4px 8px;">₹${salary} LPA</td>
+            </tr>
+          </table><br>
+          <p>For More Information about the job, please visit official Website ${company.website}</p>
+      
+          <p>Please log in to your Placement Portal account to view the full job description and apply before the deadline.</p>
+
+          <p>Best regards,<br/>
+          Placement Cell<br/>
+          CDC Placement Portal</p>
+          Chaitanya Bharathi Institute of Technology
+          </p><br/>
+          <p><strong>Note:</strong> This is an automated email. Please do not reply.</p>
+        `;
+
         await sendEmail(
-          student.email,
-          student.name,
-          "New Job Opportunity",
-          `A new job at ${company.name} offering ${role} role has been posted.`
+          [student.personalMail, student.officialMail],
+          `New Job Opportunity – ${role} at ${company.name}`,
+          emailBody
         );
       }
     });
@@ -244,7 +302,7 @@ const getAllCompanies = async (req, res) => {
   }
 };
 
-const sendEmail = async (to, name, subject, text) => {
+const sendEmail = async (to, subject, emailBody) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -257,14 +315,7 @@ const sendEmail = async (to, name, subject, text) => {
     from: `"Placement Portal" <${process.env.EMAIL_USER}>`,
     to: to,
     subject: subject,
-    html: `
-          <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd;">
-            <h2 style="color: #333;">New Job Notification</h2>
-            <p>Hello, ${name} </p>
-            <p>${text}</p>
-            <hr>
-            <p style="font-size: 12px; color: #888;">This is an automated email from Placement Portal. Please do not reply.</p>
-          </div> `,
+    html: emailBody,
   };
   await transporter.sendMail(mailOptions);
 };
@@ -315,8 +366,9 @@ const updateApplicationStatus = async (req, res) => {
 };
 
 module.exports = {
-  addAdmin,
   getAllAdmins,
+  getPendingRegistrations,
+  handleRegistration,
   addStudent,
   getAllStudents,
   addJob,

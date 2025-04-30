@@ -60,7 +60,7 @@ const studentSchema = new mongoose.Schema({
       appliedAt: { type: Date, default: Date.now },
     },
   ],
-  eligibleJobs: { type: mongoose.Schema.Types.ObjectId, ref: "Job" },
+  eligibleJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
 
   // ✅ Additional Profile Fields
   skills: [{ type: String }], // Array of skills

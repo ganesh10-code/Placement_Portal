@@ -60,11 +60,6 @@ const Sidebar = ({ activeLogin, handleNavigation, setShowUserWelcome }) => {
             icon: <FaClipboardList />,
             action: () => handleNavigation("applications"),
           },
-          {
-            name: "Job Notifications",
-            icon: <FaBell />,
-            action: () => handleNavigation("notifications"),
-          },
         ];
 
   return (

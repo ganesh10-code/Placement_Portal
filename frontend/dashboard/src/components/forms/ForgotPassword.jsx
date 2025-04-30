@@ -73,7 +73,7 @@ const ForgotPassword = ({ onClose, onOtpVerified }) => {
 
   return (
     <div className="flex items-center justify-center ">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+      <div className="bg-white/30 backdrop-blur-md p-6 rounded-lg shadow-lg w-96 text-center">
         {alert && (
           <Alert
             type={alert.type}

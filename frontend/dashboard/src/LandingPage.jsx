@@ -5,7 +5,7 @@ import StudentLogin from "./components/forms/StudentLogin";
 import Sidebar from "./components/Sidebar";
 import ForgotPassword from "./components/forms/ForgotPassword";
 import Welcome from "./components/Welcome";
-import AddAdmin from "./components/forms/AddAdmin";
+import AdminList from "./components/forms/AdminList";
 import AddStudent from "./components/forms/AddStudent";
 import AddJob from "./components/forms/AddJob";
 import "./index.css";
@@ -19,6 +19,7 @@ import ResumeMain from "./components/resume/ResumeMain";
 import ResumeScorer from "./components/resume/ResumeScorer";
 import ResumeGenerator from "./components/resume/ResumeGenerator";
 import EligibleJobs from "./components/EligibleJobs";
+import AdminRegister from "./components/forms/AdminRegister";
 
 const LandingPage = () => {
   const [activeLogin, setActiveLogin] = useState("");
@@ -27,6 +28,7 @@ const LandingPage = () => {
   const [showWelcome, setShowWelcome] = useState(true);
   const [showUserWelcome, setShowUserWelcome] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const [showAdminRegister, setShowAdminRegister] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
@@ -119,7 +121,9 @@ const LandingPage = () => {
     setShowForgotPassword(false);
     localStorage.setItem("activeLogin", role);
   };
-
+  const showAdminRegisterHandler = (decision) => {
+    setShowAdminRegister(decision);
+  };
   const handleNavigation = (page) => {
     setCurrentPage(page);
   };
@@ -169,10 +173,20 @@ const LandingPage = () => {
             {!isLoggedIn &&
               showLogin &&
               (activeLogin === "admin" ? (
-                <AdminLogin
-                  showForgotPasswordHandler={showForgotPasswordHandler}
-                  showSidebarHandler={showSidebarHandler}
-                />
+                <>
+                  {showAdminRegister ? (
+                    <AdminRegister
+                      showForgotPasswordHandler={showForgotPasswordHandler}
+                      showAdminRegisterHandler={showAdminRegisterHandler}
+                    />
+                  ) : (
+                    <AdminLogin
+                      showForgotPasswordHandler={showForgotPasswordHandler}
+                      showSidebarHandler={showSidebarHandler}
+                      showAdminRegisterHandler={showAdminRegisterHandler}
+                    />
+                  )}
+                </>
               ) : (
                 <StudentLogin
                   showForgotPasswordHandler={showForgotPasswordHandler}
@@ -194,7 +208,7 @@ const LandingPage = () => {
                     {currentPage === "Admins" &&
                       isLoggedIn &&
                       activeLogin === "admin" && (
-                        <AddAdmin logoutHandler={logoutHandler} />
+                        <AdminList logoutHandler={logoutHandler} />
                       )}
                     {currentPage === "Students" &&
                       isLoggedIn &&

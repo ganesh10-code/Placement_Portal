@@ -55,11 +55,37 @@ const createInitialAdmin = async () => {
     console.error("Error creating initial admin:", error);
   }
 };
+//Admin Registration
+const adminRegister = async (req, res) => {
+  const { name, email, password } = req.body;
+  try {
+    const existing = await Admin.findOne({ email });
+    if (existing)
+      return res.status(400).json({ message: "Email already exists" });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAdmin = new Admin({
+      name,
+      email,
+      password: hashedPassword,
+      status: "pending", // Require approval
+    });
+    await newAdmin.save();
+    res
+      .status(201)
+      .json({ message: "Registration submitted. Awaiting approval." });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
 //Admin login
 const adminLogin = async (req, res) => {
   const { email, password } = req.body;
   try {
     const admin = await Admin.findOne({ email });
+    if (!admin || admin.status !== "accepted") {
+      return res.status(403).json({ message: "Account not approved yet" });
+    }
     if (!admin || !(await bcrypt.compare(password, admin.password))) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
@@ -224,6 +250,7 @@ const refreshAccessToken = async (req, res) => {
 };
 
 module.exports = {
+  adminRegister,
   adminLogin,
   studentLogin,
   createInitialAdmin,

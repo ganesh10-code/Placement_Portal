@@ -20,6 +20,11 @@ const adminSchema = new mongoose.Schema({
   otpExpires: {
     type: Date,
   },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
 });
 const Admin = mongoose.model("Admin", adminSchema);
 module.exports = Admin;

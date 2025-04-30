@@ -13,8 +13,14 @@ const JobSchema = new mongoose.Schema(
     location: { type: String },
     salary: { type: Number },
     eligibilityCriteria: {
-      minCGPA: Number,
-      allowedBranches: [String],
+      minCGPA: { type: Number },
+      allowedBranches: [{ type: String }],
+    },
+    applyLink: { type: String },
+    jobType: {
+      type: String,
+      enum: ["Internship", "Full-time", "Part-time"],
+      default: "Full-time",
     },
     deadline: { type: Date },
     postedBy: {

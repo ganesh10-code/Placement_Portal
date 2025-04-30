@@ -4,13 +4,17 @@ const verifyToken = require("../middleware/verifyToken");
 const express = require("express");
 const router = express.Router();
 
-router.post(
-  "/add_admin",
-  validatePasswordMiddleware,
-  verifyToken,
-  adminController.addAdmin
-);
 router.get("/get_all_admins", verifyToken, adminController.getAllAdmins);
+router.get(
+  "/pending_registrations",
+  verifyToken,
+  adminController.getPendingRegistrations
+);
+router.post(
+  "/handle_registration",
+  verifyToken,
+  adminController.handleRegistration
+);
 router.post(
   "/add_student",
   validatePasswordMiddleware,
