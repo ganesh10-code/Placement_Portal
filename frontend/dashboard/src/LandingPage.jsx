@@ -19,6 +19,7 @@ import ResumeMain from "./components/resume/ResumeMain";
 import ResumeScorer from "./components/resume/ResumeScorer";
 import ResumeGenerator from "./components/resume/ResumeGenerator";
 import EligibleJobs from "./components/EligibleJobs";
+import JobApplications from "./components/jobApplications";
 import AdminRegister from "./components/forms/AdminRegister";
 
 const LandingPage = () => {
@@ -59,6 +60,7 @@ const LandingPage = () => {
     localStorage.removeItem("activeLogin");
     localStorage.removeItem("email");
     localStorage.removeItem("User");
+    localStorage.removeItem("appliedJobs");
     setIsLoggedIn(false);
     setActiveLogin(null);
     setShowLogin(false);
@@ -255,6 +257,14 @@ const LandingPage = () => {
                       isLoggedIn &&
                       activeLogin === "student" && (
                         <EligibleJobs
+                          logoutHandler={logoutHandler}
+                          handleNavigation={handleNavigation}
+                        />
+                      )}
+                    {currentPage === "applications" &&
+                      isLoggedIn &&
+                      activeLogin === "student" && (
+                        <JobApplications
                           logoutHandler={logoutHandler}
                           handleNavigation={handleNavigation}
                         />

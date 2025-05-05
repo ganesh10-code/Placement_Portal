@@ -7,7 +7,10 @@ export const fetchWithAuth = async (url, logoutHandler, options = {}) => {
     options.headers = {};
   }
 
-  options.headers["Content-Type"] = "application/json";
+  if (!(options.body instanceof FormData)) {
+    options.headers["Content-Type"] = "application/json";
+  }
+
   options.headers["Authorization"] = `Bearer ${token}`;
 
   let response = await fetch(`${API_URL}${url}`, options);

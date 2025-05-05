@@ -1,5 +1,7 @@
 const Student = require("../models/Student");
 const Job = require("../models/Job");
+const fs = require("fs");
+const path = require("path");
 
 const uploadResume = async (req, res) => {
   if (req.user.role != "student") {
@@ -18,8 +20,8 @@ const uploadResume = async (req, res) => {
     }
 
     // Save file path in student document
-    const filepath = req.file.path;
-    student.resume = filepath;
+    const filepath = req.file.path.replace(/\\/g, "/");
+    student.resume = `/${filepath}`;
     await student.save();
 
     res.status(200).json({
@@ -62,7 +64,7 @@ const deleteResume = async (req, res) => {
     }
 
     // Delete the file from storage
-    const filePath = student.resume;
+    const filePath = path.join(__dirname, "..", student.resume);
     fs.unlink(filePath, (err) => {
       if (err) {
         console.error("Error deleting resume file:", err);
@@ -87,11 +89,36 @@ const getEligibleJobs = async (req, res) => {
       populate: { path: "companyId", model: "Company" },
     });
 
-    res.status(200).json({ jobs: student.eligibleJobs });
+    res
+      .status(200)
+      .json({ jobs: student.eligibleJobs, appliedJobIds: student.jobsApplied });
   } catch (err) {
     res
       .status(500)
       .json({ message: "Failed to fetch eligible jobs", error: err.message });
+  }
+};
+
+//applied-job
+const getAppliedJobs = async (req, res) => {
+  try {
+    const studentId = req.user.id;
+    const student = await Student.findById(studentId)
+      .populate({
+        path: "jobsApplied.jobId",
+        populate: { path: "companyId", model: "Company" },
+      })
+      .select("jobsApplied");
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+    res.status(200).json({ jobs: student.jobsApplied });
+  } catch (err) {
+    console.error("Error fetching applied jobs:", err);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch Applied jobs", error: err.message });
   }
 };
 
@@ -111,17 +138,6 @@ const applyJob = async (req, res) => {
     const jobId = req.params.jobId;
     const job = await Job.findById(jobId);
     if (!job) return res.status(404).json({ message: "Job not found" });
-
-    if (
-      student.education.cgpa < job.eligibilityCriteria.minCGPA ||
-      !job.eligibilityCriteria.allowedBranches.includes(
-        student.education.branch
-      )
-    ) {
-      return res.status(403).json({
-        message: "You do not meet the eligibility criteria for this job.",
-      });
-    }
 
     if (new Date(job.deadline) < new Date()) {
       return res
@@ -143,37 +159,6 @@ const applyJob = async (req, res) => {
     res
       .status(200)
       .json({ message: "Job application submitted successfully." });
-  } catch (error) {
-    res.status(500).json({ message: "Server Error", error: error.message });
-  }
-};
-
-const withdrawApplication = async (req, res) => {
-  if (req.user.role != "student") {
-    return res.status(404).json({ message: "Access Denied" });
-  }
-  try {
-    const studentId = req.user.id;
-    const jobId = req.params.jobId;
-
-    const student = await Student.findById(studentId);
-    if (!student) return res.status(404).json({ message: "Student not found" });
-
-    const job = await Job.findById(jobId);
-    if (!job) return res.status(404).json({ message: "Job not found" });
-
-    // Remove application from student and job
-    student.appliedJobs = student.appliedJobs.filter(
-      (app) => app.jobId.toString() !== jobId
-    );
-    job.applicants = job.applicants.filter(
-      (app) => app.studentId.toString() !== studentId
-    );
-
-    await student.save();
-    await job.save();
-
-    res.status(200).json({ message: "Application withdrawn successfully." });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
@@ -261,7 +246,7 @@ module.exports = {
   deleteResume,
   getEligibleJobs,
   applyJob,
-  withdrawApplication,
   getStudentDetails,
+  getAppliedJobs,
   updateProfile,
 };

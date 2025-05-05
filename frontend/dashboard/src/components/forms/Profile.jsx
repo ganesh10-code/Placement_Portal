@@ -23,6 +23,7 @@ const Profile = ({ logoutHandler }) => {
     ],
   });
   const [message, setMessage] = useState(null);
+  const [resumeFile, setResumeFile] = useState(null);
 
   useEffect(() => {
     const getStudentDetails = async () => {
@@ -58,6 +59,7 @@ const Profile = ({ logoutHandler }) => {
       }
     };
     getStudentDetails();
+    fetchResume();
   }, []);
 
   useEffect(() => {
@@ -95,6 +97,51 @@ const Profile = ({ logoutHandler }) => {
     });
   };
 
+  const fetchResume = async () => {
+    try {
+      const { response, data } = await fetchWithAuth(
+        "/student/get_resume",
+        logoutHandler
+      );
+      if (response.ok) {
+        setResumeFile(data.resumePath); // Assume this is a valid URL or relative path
+      }
+    } catch (error) {
+      console.error("Error fetching resume", error);
+    }
+  };
+
+  const handleDeleteResume = async () => {
+    try {
+      const { response, data } = await fetchWithAuth(
+        "/student/delete_resume",
+        logoutHandler,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (response.ok) {
+        setMessage({
+          type: "success",
+          text: "✅ Resume deleted successfully.",
+        });
+        setResumeFile(null); // Reset to show file input
+      } else {
+        setMessage({
+          type: "error",
+          text: data.message || "Failed to delete resume.",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting resume", error);
+      setMessage({
+        type: "error",
+        text: "An error occurred while deleting resume.",
+      });
+    }
+  };
+
   const handleSave = async () => {
     try {
       const { response, data } = await fetchWithAuth(
@@ -105,13 +152,35 @@ const Profile = ({ logoutHandler }) => {
           body: JSON.stringify(formData),
         }
       );
+
       if (response.ok) {
+        // Upload resume if present
+        if (resumeFile && !student?.resume) {
+          const resumeForm = new FormData();
+          resumeForm.append("resume", resumeFile);
+
+          const { response: uploadRes, data: uploadData } = await fetchWithAuth(
+            "/student/upload_resume",
+            logoutHandler,
+            {
+              method: "POST",
+              body: resumeForm,
+            }
+          );
+
+          if (!uploadRes.ok) {
+            throw new Error(uploadData.message || "Resume upload failed");
+          }
+        }
+
+        // ✅ Move success-related state updates here
         setMessage({
           type: "success",
           text: "✅ Profile Updated Successfully",
         });
         setStudent(data.updatedProfile);
         setEditing(false);
+        fetchResume();
       } else {
         console.log("Failed to update profile");
         setMessage({
@@ -314,6 +383,22 @@ const Profile = ({ logoutHandler }) => {
                   ))}
                 </ul>
               </div>
+
+              {resumeFile && (
+                <div className="mt-4">
+                  <h3 className="font-semibold">
+                    <strong>Uploaded Resume:</strong>
+                  </h3>
+                  <a
+                    href={`http://localhost:4000${resumeFile}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 underline"
+                  >
+                    View Resume
+                  </a>
+                </div>
+              )}
 
               <button
                 onClick={() => setEditing(true)}
@@ -647,6 +732,36 @@ const Profile = ({ logoutHandler }) => {
                 >
                   Add Social Profile
                 </button>
+                <div>
+                  <h3 className="font-semibold mt-4">Upload Resume</h3>
+                  {!resumeFile || resumeFile instanceof File ? (
+                    <div className="mt-4">
+                      <input
+                        type="file"
+                        accept=".pdf"
+                        onChange={(e) => setResumeFile(e.target.files[0])}
+                        className="border p-2 w-full"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex gap-4 mt-4">
+                      <a
+                        href={`http://localhost:4000${resumeFile}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-blue-600 text-white px-4 py-2 rounded"
+                      >
+                        View Resume
+                      </a>
+                      <button
+                        onClick={handleDeleteResume}
+                        className="bg-red-500 text-white px-4 py-2 rounded"
+                      >
+                        Delete Resume
+                      </button>
+                    </div>
+                  )}
+                </div>
                 <div>
                   <button
                     onClick={handleSave}

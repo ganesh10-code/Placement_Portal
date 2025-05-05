@@ -12,6 +12,7 @@ router.post(
   "/admin_register",
   loginLimiter,
   loginSlowDown,
+  validatePasswordMiddleware,
   authController.adminRegister
 );
 router.post(

@@ -10,11 +10,7 @@ const storage = multer.diskStorage({
     cb(null, dir); // Folder where resumes will be stored
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
+    cb(null, file.originalname);
   },
 });
 
