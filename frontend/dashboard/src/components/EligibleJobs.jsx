@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { fetchWithAuth } from "../../utilities/api"; // Adjust the import path as necessary
+import { fetchWithAuth } from "../../utilities/api";
 
 const EligibleJobs = ({ logoutHandler }) => {
   const [jobs, setJobs] = useState([]);
@@ -16,14 +16,6 @@ const EligibleJobs = ({ logoutHandler }) => {
       );
       if (response.ok) {
         setJobs(Array.isArray(data.jobs) ? data.jobs : []);
-        const backendAppliedJobs = data.appliedJobIds || [];
-        const storedAppliedJobs =
-          JSON.parse(localStorage.getItem("appliedJobs")) || [];
-
-        const merged = [
-          ...new Set([...backendAppliedJobs, ...storedAppliedJobs]),
-        ];
-        setAppliedJobs(merged);
       } else {
         console.error("Failed to fetch jobs:", data.message || data.error);
         setJobs([]);
@@ -36,26 +28,8 @@ const EligibleJobs = ({ logoutHandler }) => {
 
   useEffect(() => {
     fetchEligibleJobs();
+    fetchAppliedJobs();
   }, []);
-
-  // On component mount, check for applied jobs in localStorage
-  useEffect(() => {
-    const storedAppliedJobs =
-      JSON.parse(localStorage.getItem("appliedJobs")) || [];
-    if (appliedJobs.length > 0) {
-      const merged = [...new Set([...appliedJobs, ...storedAppliedJobs])];
-      setAppliedJobs(merged);
-    } else {
-      setAppliedJobs(storedAppliedJobs);
-    }
-  }, []);
-
-  // Update localStorage whenever appliedJobs changes
-  useEffect(() => {
-    if (appliedJobs.length > 0) {
-      localStorage.setItem("appliedJobs", JSON.stringify(appliedJobs));
-    }
-  }, [appliedJobs]);
 
   const handleJobClick = (job) => {
     setSelectedJob(job);
@@ -63,6 +37,23 @@ const EligibleJobs = ({ logoutHandler }) => {
 
   const handleBackClick = () => {
     setSelectedJob(null);
+  };
+
+  const fetchAppliedJobs = async () => {
+    try {
+      const { response, data } = await fetchWithAuth(
+        "/student/applied_jobs",
+        logoutHandler
+      );
+      if (response.ok) {
+        const backendAppliedJobIds = data.jobs.map((j) => j.jobId._id);
+        setAppliedJobs(backendAppliedJobIds);
+      } else {
+        console.error("Failed to fetch applied jobs:", data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching applied jobs:", error);
+    }
   };
 
   const markAsApplied = async (jobId) => {
@@ -77,11 +68,7 @@ const EligibleJobs = ({ logoutHandler }) => {
 
       if (response.ok) {
         // Add to appliedJobs state and update localStorage
-        setAppliedJobs((prev) => {
-          const updatedJobs = [...prev, jobId];
-          localStorage.setItem("appliedJobs", JSON.stringify(updatedJobs)); // Persist to localStorage
-          return updatedJobs;
-        });
+        setAppliedJobs((prev) => [...new Set([...prev, jobId])]);
         setMessage({
           type: "success",
           text: "✅ Marked as Applied successfully!",
@@ -115,7 +102,7 @@ const EligibleJobs = ({ logoutHandler }) => {
       )}
       {!selectedJob ? (
         <>
-          <h2 className="text-2xl font-bold mb-4 text-deepBlue">
+          <h2 className="text-3xl font-bold mb-4 text-deepBlue">
             Eligible Job Opportunities
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

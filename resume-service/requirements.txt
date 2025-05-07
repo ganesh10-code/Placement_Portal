@@ -7,4 +7,3 @@ pydantic
 requests
 google-generativeai
 pdfplumber
-json

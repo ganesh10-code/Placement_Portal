@@ -17,7 +17,7 @@ import json
 
 
   
-genai.configure(api_key= "AIzaSyABxpQykqXM077ASrsvIyfY1k8rRd6z_hg")
+genai.configure(api_key= "AIzaSyAblkDTkz-1iIzU8RyeAD3CBq4BRaLrIfg")
 
 app = FastAPI()
 

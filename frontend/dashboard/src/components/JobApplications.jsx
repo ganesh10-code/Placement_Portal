@@ -41,7 +41,7 @@ const JobApplications = ({ logoutHandler }) => {
       )}
 
       {applications.length === 0 ? (
-        <p className="text-gray-500 text-lg">No applications found.</p>
+        <p className="text-white text-lg">No applications found.</p>
       ) : (
         <div className="space-y-5">
           {applications.map((app, index) => {
